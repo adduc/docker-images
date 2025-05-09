@@ -59,15 +59,17 @@ build: $(VARIANTS:%=build-%)
 
 # build all variants for a specific platform
 $(PLATFORMS:%=build-%):
-	$(MAKE) $(VERSIONS:%=build-%-$(WORD_2))
+	@$(MAKE) $(VERSIONS:%=build-%-$(WORD_2))
 
 # build all variants for a specific version
 $(VERSIONS:%=build-%):
-	$(MAKE) $(PLATFORMS:%=build-$(WORD_2)-%)
+	@$(MAKE) $(PLATFORMS:%=build-$(WORD_2)-%)
 
 # build a specific variant
 $(VARIANTS:%=build-%):
-	docker build \
+	@echo -e "\e[1;32mBuilding $(NAMESPACE)/$(IMAGE):$(TAG)\e[0m..."
+
+	@docker build \
 		$(BUILD_ARGS_STRING) \
 	  	--platform linux/$(PLATFORM) \
 		--tag $(NAMESPACE)/$(IMAGE):$(TAG) \
