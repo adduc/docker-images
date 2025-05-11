@@ -60,11 +60,11 @@ jobs:
   build-base:
     needs: preflight
     if: needs.preflight.outputs.is_image == 'false'
-    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
         directory: ${{ fromJson(needs.preflight.outputs.list_base) }}
+    runs-on: ubuntu-24.04
     steps:
       - run: |
           echo "Due to workflow depth limitations, we cannot build this image."
