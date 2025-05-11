@@ -3,8 +3,7 @@
 # This is a GitHub Actions workflow that builds Docker images
 ##
 
-
-name: Build Docker Images
+name: Build (Layer 2)
 
 on:
   workflow_call:
