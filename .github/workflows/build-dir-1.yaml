@@ -30,7 +30,7 @@ jobs:
     uses: ./.github/workflows/build-dir-2.yaml
     with:
       directory: ${{ matrix.directory }}
-      tag_prefix: ${{ github.ref == 'refs/heads/main' && '' || format('{0}-', github.ref) }}
+      tag_prefix: ${{ github.ref == 'refs/heads/main' && '' || format('{0}-', github.ref_name) }}
 
   build-non-base:
     needs: [gather-metadata, build-base]
@@ -42,7 +42,7 @@ jobs:
     uses: ./.github/workflows/build-dir-2.yaml
     with:
       directory: ${{ matrix.directory }}
-      tag_prefix: ${{ github.ref == 'refs/heads/main' && '' || format('{0}-', github.ref) }}
+      tag_prefix: ${{ github.ref == 'refs/heads/main' && '' || format('{0}-', github.ref_name) }}
 
   build-image:
     needs: gather-metadata
@@ -60,4 +60,4 @@ jobs:
         with:
           directory: .
           variant: ${{ matrix.variant }}
-          tag_prefix: ${{ github.ref == 'refs/heads/main' && '' || format('{0}-', github.ref) }}
+          tag_prefix: ${{ github.ref == 'refs/heads/main' && '' || format('{0}-', github.ref_name) }}
