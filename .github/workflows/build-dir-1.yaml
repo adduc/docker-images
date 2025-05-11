@@ -9,12 +9,6 @@ name: Build Docker Images
 on:
   push:
 
-  workflow_call:
-    inputs:
-      directory:
-        required: true
-        type: string
-
 # Ensure that there is only ever one build running at a time for a given
 # branch
 concurrency:

@@ -7,8 +7,6 @@
 name: Build Docker Images
 
 on:
-  push:
-
   workflow_call:
     inputs:
       directory:
