@@ -6,6 +6,9 @@
 
 name: Build Docker Images
 
+env:
+  NAMESPACE: adduc
+
 on:
   push:
 
@@ -32,12 +35,15 @@ jobs:
       - name: Determine if this is an image or directory
         id: is-image
         run: |
+          set -o pipefail -o errexit -o nounset
           [ -f Dockerfile ] && IS_IMAGE="true" || IS_IMAGE="false"
           echo "is_image=$IS_IMAGE" >> $GITHUB_OUTPUT
 
       - name: List variants/directories
         id: list
-        run: echo "list=$(make list)" >> $GITHUB_OUTPUT
+        run: |
+          set -o pipefail -o errexit -o nounset
+          echo "list=$(make list)" >> $GITHUB_OUTPUT
 
   # # If this directory represents an image that can be built, build it
   # build:
