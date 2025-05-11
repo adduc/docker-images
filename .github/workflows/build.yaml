@@ -63,8 +63,10 @@ jobs:
     needs: preflight
     if: needs.preflight.outputs.is_image == 'false'
     runs-on: ubuntu-24.04
-    matrix:
-      directory: ${{ fromJson(needs.preflight.outputs.list_base) }}
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: ${{ fromJson(needs.preflight.outputs.list) }}
     steps:
       - uses: ./.github/workflows/build.yaml
         with:
