@@ -59,24 +59,40 @@ jobs:
       directory: ${{ matrix.directory }}
 
 
-  # # if this directory represents a folder with multiple images, build
-  # # the non-base images (if any)
-  # build-non-base:
+  # if this directory represents a folder with multiple images, build
+  # the non-base images (if any)
+  build-non-base:
+    needs: [preflight, build-base]
+    if: needs.preflight.outputs.is_image == 'false'
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: ${{ fromJson(needs.preflight.outputs.list_baseless) }}
+    uses: ./.github/workflows/build-dir-3.yaml
+    with:
+      directory: ${{ matrix.directory }}
 
 
-# workflowBuild (directory=.,variant=null):
-#   list variants (if possible)
-#     -> build each variant
-#   find base* directories with Makefile
-#     -> call workflowBuild with directory
-#   find non-base directories with Makefile
-#     -> call workflowBuild with directory
+  # if this directory represents an image, build it
+  build-image:
+    needs: preflight
+    if: needs.preflight.outputs.is_image == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: ${{ fromJson(needs.preflight.outputs.list) }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      - name: Prepare .env file
+        run: |
+          set -o pipefail -o errexit -o nounset
+          cp .ci.env .env
 
-# With this approach:
-# - we allow up to four layers of image dependencies in a single workflow
-# - we allow every image (including variants) to be built in parallel
-# - workflowBuild could be dispatched with a specific directory and variant to build a single image
-# - workflowBuild could be scheduled to run periodically, e.g. every week
-
-
+      - name: Build Image
+        run: |
+          set -o pipefail -o errexit -o nounset
+          cd ${{ inputs.directory }}
+          make build-${{ matrix.variant }}
