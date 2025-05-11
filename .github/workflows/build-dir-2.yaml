@@ -65,6 +65,8 @@ jobs:
       matrix:
         directory: ${{ fromJson(needs.preflight.outputs.list_base) }}
     uses: ./.github/workflows/build-dir-3.yaml
+    with:
+      directory: ${{ matrix.directory }}
 
 
   # # if this directory represents a folder with multiple images, build
