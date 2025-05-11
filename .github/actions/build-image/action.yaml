@@ -11,11 +11,13 @@ runs:
   using: composite
   steps:
     - name: Prepare .env file
+      shell: bash
       run: |
         set -o pipefail -o errexit -o nounset
         cp .ci.env .env
 
     - name: Build Image
+      shell: bash
       run: |
         set -o pipefail -o errexit -o nounset
         cd ${{ inputs.directory }}
