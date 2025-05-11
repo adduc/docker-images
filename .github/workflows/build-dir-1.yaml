@@ -6,7 +6,7 @@
 name: Build
 
 env:
-  TAG_PREFIX: ${{ github.ref == 'refs/heads/main' && '' || github.ref_name + '-' }}
+  TAG_PREFIX: ${{ github.ref == 'refs/heads/main' && '' || format('{0}-', github.ref_name) }}
 
 on:
   push:
