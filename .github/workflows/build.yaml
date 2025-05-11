@@ -50,9 +50,9 @@ jobs:
         id: list
         run: |
           set -o pipefail -o errexit -o nounset
-          echo "list=$(make list)" | tee $GITHUB_OUTPUT
-          echo "list-base=$(make list-base)" | tee $GITHUB_OUTPUT
-          echo "list-baseless=$(make list-baseless)" | tee $GITHUB_OUTPUT
+          echo "list=$(make list | jq -R -c 'split(" ")')" | tee $GITHUB_OUTPUT
+          echo "list-base=$(make list-base | jq -R -c 'split(" ")')" | tee $GITHUB_OUTPUT
+          echo "list-baseless=$(make list-baseless | jq -R -c 'split(" ")')" | tee $GITHUB_OUTPUT
 
   # # If this directory represents an image that can be built, build it
   # build:
