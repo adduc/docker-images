@@ -10,16 +10,16 @@ on:
     outputs:
       is_image:
         description: 'Is this directory an image?'
-        value: ${{ steps.gather-metadata.outputs.is_image }}
+        value: ${{ jobs.gather-metadata.outputs.is_image }}
       list:
         description: 'List of image variants in this directory'
-        value: ${{ steps.gather-metadata.outputs.list }}
+        value: ${{ jobs.gather-metadata.outputs.list }}
       list_base:
         description: 'List of base image directories in this directory'
-        value: ${{ steps.gather-metadata.outputs.list_base }}
+        value: ${{ jobs.gather-metadata.outputs.list_base }}
       list_baseless:
         description: 'List of non-base image directories in this directory'
-        value: ${{ steps.gather-metadata.outputs.list_baseless }}
+        value: ${{ jobs.gather-metadata.outputs.list_baseless }}
 
 jobs:
   gather-metadata:
