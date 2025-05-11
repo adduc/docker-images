@@ -25,22 +25,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare .env file
-        run: |
-          set -o pipefail -o errexit -o nounset
-          cp .ci.env .env
-
-      - name: Calculate Outputs
-        id: calculation
-        run: |
-          set -o pipefail -o errexit -o nounset
-          cd ${{ inputs.directory }}
-          [ -f Dockerfile ] && IS_IMAGE="true" || IS_IMAGE="false"
-
-          echo "is_image=$IS_IMAGE" | tee -a $GITHUB_OUTPUT
-          echo "list=$(make list | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
-          echo "list_base=$(make list-base | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
-          echo "list_baseless=$(make list-baseless | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
+      - uses: ./.github/actions/gather-metadata
+        with:
+          directory: ${{ inputs.directory }}
 
   # # If this directory represents an image that can be built, build it
   # build:
@@ -86,6 +73,9 @@ jobs:
         variant: ${{ fromJson(needs.preflight.outputs.list) }}
     runs-on: "${{ contains(matrix.variant, 'arm64') && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}"
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - uses: ./.github/actions/build-image
         with:
           directory: ${{ inputs.directory }}
