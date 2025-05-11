@@ -63,11 +63,16 @@ jobs:
     needs: preflight
     if: needs.preflight.outputs.is_image == 'false'
     runs-on: ubuntu-24.04
-    uses: ./.github/workflows/build.yaml
     strategy:
       fail-fast: false
       matrix:
         directory: ${{ fromJson(needs.preflight.outputs.list_base) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: ./.github/workflows/build.yaml
+        with:
+          directory: ${{ matrix.directory }}
 
   # # if this directory represents a folder with multiple images, build
   # # the non-base images (if any)
