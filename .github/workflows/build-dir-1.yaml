@@ -17,19 +17,9 @@ concurrency:
 
 jobs:
   gather-metadata:
-    # checkout, determine whether this is an image or directory
-    runs-on: ubuntu-24.04
-    outputs:
-      is_image: ${{ steps.calculation.outputs.is_image }}
-      list: ${{ steps.calculation.outputs.list }}
-      list_base: ${{ steps.calculation.outputs.list_base }}
-      list_baseless: ${{ steps.calculation.outputs.list_baseless }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - uses: ./.github/actions/gather-metadata
-        with:
-          directory: .
+    uses: ./.github/workflows/gather-metadata.yaml
+    with:
+      directory: .
 
   # # If this directory represents an image that can be built, build it
   # build:
