@@ -81,7 +81,7 @@ jobs:
       fail-fast: false
       matrix:
         variant: ${{ fromJson(needs.preflight.outputs.list) }}
-    runs-on: contains(matrix.variant, 'arm64') && 'ubuntu-22.04-arm' || 'ubuntu-24.04'
+    runs-on: "${{ contains(matrix.variant, 'arm64') && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}"
     steps:
       - uses: ./.github/actions/build-image
         with:
