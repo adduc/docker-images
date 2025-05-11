@@ -38,8 +38,8 @@ jobs:
           set -o pipefail -o errexit -o nounset
           cp .ci.env .env
 
-      - name: Calculate Outputs
-        id: calculation
+      - name: Gather Metadata
+        id: gather-metadata
         shell: bash
         run: |
           set -o pipefail -o errexit -o nounset
