@@ -40,6 +40,7 @@ BUILD_ARGS ?= NAMESPACE=$(NAMESPACE) VERSION=$(VERSION) PLATFORM=$(PLATFORM)
 BUILD_ARGS_STRING ?= $(foreach arg,$(BUILD_ARGS),--build-arg $(arg))
 
 TAG ?= $(VERSION)-$(PLATFORM)
+FQTAG ?= $(NAMESPACE)/$(IMAGE):$(TAG_PREFIX)$(TAG)
 
 list:
 	@echo $(VARIANTS)
@@ -63,16 +64,16 @@ $(VERSIONS:%=build-%):
 
 # build a specific variant
 $(VARIANTS:%=build-%):
-	@echo -e "\e[1;32mBuilding $(NAMESPACE)/$(IMAGE):$(TAG)\e[0m..."
+	@echo -e "\e[1;32mBuilding $(FQTAG)\e[0m..."
 	@echo -e "\e[1;32mUsing build args: $(BUILD_ARGS)\e[0m..."
 
 	@docker build \
 		$(BUILD_ARGS_STRING) \
 	  	--platform linux/$(PLATFORM) \
-		--tag $(NAMESPACE)/$(IMAGE):$(TAG_PREFIX)$(TAG) \
+		--tag $(FQTAG) \
 		.
 
 # push a specific variant
 $(VARIANTS:%=push-%):
-	@echo -e "\e[1;32mPushing $(NAMESPACE)/$(IMAGE):$(TAG)\e[0m..."
-	@docker push $(NAMESPACE)/$(IMAGE):$(TAG_PREFIX)$(TAG)
+	@echo -e "\e[1;32mPushing $(FQTAG)\e[0m..."
+	@docker push $(FQTAG)
