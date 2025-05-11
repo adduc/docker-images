@@ -70,4 +70,6 @@ jobs:
           directory: ${{ inputs.directory }}
           variant: ${{ matrix.variant }}
           tag_prefix: ${{ inputs.tag_prefix }}
+          docker_username: ${{ secrets.DOCKER_USERNAME }}
+          docker_password: ${{ secrets.DOCKER_PASSWORD }}
 
