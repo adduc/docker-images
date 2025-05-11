@@ -5,9 +5,6 @@
 
 name: Build
 
-env:
-  TAG_PREFIX: ${{ github.ref == 'refs/heads/main' && '' || format('{0}-', github.ref_name) }}
-
 on:
   push:
 
@@ -16,6 +13,9 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  TAG_PREFIX: ${{ github.ref == 'refs/heads/main' && '' || format('{0}-', github.head_ref) }}
 
 jobs:
   gather-metadata:
@@ -33,6 +33,7 @@ jobs:
     uses: ./.github/workflows/build-dir-2.yaml
     with:
       directory: ${{ matrix.directory }}
+      tag_prefix: ${{ env.TAG_PREFIX }}
 
   build-non-base:
     needs: [gather-metadata, build-base]
@@ -44,6 +45,7 @@ jobs:
     uses: ./.github/workflows/build-dir-2.yaml
     with:
       directory: ${{ matrix.directory }}
+      tag_prefix: ${{ env.TAG_PREFIX }}
 
   build-image:
     needs: gather-metadata
@@ -61,3 +63,4 @@ jobs:
         with:
           directory: .
           variant: ${{ matrix.variant }}
+          tag_prefix: ${{ env.TAG_PREFIX }}

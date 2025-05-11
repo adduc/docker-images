@@ -9,6 +9,9 @@ on:
       directory:
         required: true
         type: string
+      tag_prefix:
+        required: true
+        type: string
 
 jobs:
   gather-metadata:
@@ -31,6 +34,7 @@ jobs:
     uses: ./.github/workflows/build-dir-3.yaml
     with:
       directory: ${{ matrix.directory }}
+      tag_prefix: ${{ inputs.tag_prefix }}
 
 
   # if this directory represents a folder with multiple images, build
@@ -45,6 +49,7 @@ jobs:
     uses: ./.github/workflows/build-dir-3.yaml
     with:
       directory: ${{ matrix.directory }}
+      tag_prefix: ${{ inputs.tag_prefix }}
 
 
   # if this directory represents an image, build it
@@ -64,4 +69,5 @@ jobs:
         with:
           directory: ${{ inputs.directory }}
           variant: ${{ matrix.variant }}
+          tag_prefix: ${{ inputs.tag_prefix }}
 

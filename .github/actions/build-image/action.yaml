@@ -6,6 +6,9 @@ inputs:
   variant:
     description: 'Variant of the image to build'
     required: true
+  tag_prefix:
+    description: 'Tag prefix to use for the image'
+    required: true
 
 runs:
   using: composite
@@ -21,11 +24,11 @@ runs:
       run: |
         set -o pipefail -o errexit -o nounset
         cd ${{ inputs.directory }}
-        make build-${{ inputs.variant }}
+        make build-${{ inputs.variant }} TAG_PREFIX=${{ inputs.tag_prefix }}
 
     - name: Push Image
       shell: bash
       run: |
         set -o pipefail -o errexit -o nounset
         cd ${{ inputs.directory }}
-        make push-${{ inputs.variant }}
+        make push-${{ inputs.variant }} TAG_PREFIX=${{ inputs.tag_prefix }}

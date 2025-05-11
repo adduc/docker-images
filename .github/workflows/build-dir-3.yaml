@@ -9,6 +9,9 @@ on:
       directory:
         required: true
         type: string
+      tag_prefix:
+        required: false
+        type: string
 
 jobs:
   gather-metadata:
@@ -67,4 +70,5 @@ jobs:
         with:
           directory: ${{ inputs.directory }}
           variant: ${{ matrix.variant }}
+          tag_prefix: ${{ inputs.tag_prefix }}
 
