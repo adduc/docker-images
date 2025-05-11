@@ -37,7 +37,7 @@ jobs:
 
       - name: List variants/directories
         id: list
-        run: echo "list=$(make list)" >> $GITHUB_OUTPUT"
+        run: echo "list=$(make list)" >> $GITHUB_OUTPUT
 
   # # If this directory represents an image that can be built, build it
   # build:
