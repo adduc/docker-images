@@ -1,0 +1,25 @@
+name: Build Image
+inputs:
+  directory:
+    description: 'Directory where the image is located'
+    required: true
+  variant:
+    description: 'Variant of the image to build'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Prepare .env file
+      run: |
+        set -o pipefail -o errexit -o nounset
+        cp .ci.env .env
+
+    - name: Build Image
+      run: |
+        set -o pipefail -o errexit -o nounset
+        cd ${{ inputs.directory }}
+        make build-${{ inputs.variant }}
