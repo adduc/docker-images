@@ -1,0 +1,93 @@
+---
+##
+# This is a GitHub Actions workflow that builds Docker images
+##
+
+
+name: Build Docker Images
+
+on:
+  push:
+
+  workflow_call:
+    inputs:
+      directory:
+        required: true
+        type: string
+
+# Ensure that there is only ever one build running at a time for a given
+# branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preflight:
+    # checkout, determine whether this is an image or directory
+    runs-on: ubuntu-24.04
+    outputs:
+      is_image: ${{ steps.is-image.outputs.is_image }}
+      list: ${{ steps.list.outputs.list }}
+      list_base: ${{ steps.list.outputs.list_base }}
+      list_baseless: ${{ steps.list.outputs.list_baseless }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare .env file
+        run: |
+          set -o pipefail -o errexit -o nounset
+          cp .ci.env .env
+
+      - name: Determine if this is an image or directory
+        id: is-image
+        run: |
+          set -o pipefail -o errexit -o nounset
+          [ -f Dockerfile ] && IS_IMAGE="true" || IS_IMAGE="false"
+          echo "is_image=$IS_IMAGE" | tee -a $GITHUB_OUTPUT
+
+      - name: List variants/directories
+        id: list
+        run: |
+          set -o pipefail -o errexit -o nounset
+          echo "list=$(make list | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
+          echo "list_base=$(make list-base | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
+          echo "list_baseless=$(make list-baseless | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
+
+  # # If this directory represents an image that can be built, build it
+  # build:
+
+  # if this directory represents a folder with multiple images, build
+  # the base images (if any)
+  build-base:
+    needs: preflight
+    if: needs.preflight.outputs.is_image == 'false'
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: ${{ fromJson(needs.preflight.outputs.list_base) }}
+    uses: ./.github/workflows/build-dir-3.yaml
+
+
+  # # if this directory represents a folder with multiple images, build
+  # # the non-base images (if any)
+  # build-non-base:
+
+
+# workflowBuild (directory=.,variant=null):
+#   list variants (if possible)
+#     -> build each variant
+#   find base* directories with Makefile
+#     -> call workflowBuild with directory
+#   find non-base directories with Makefile
+#     -> call workflowBuild with directory
+
+
+# With this approach:
+# - we allow up to four layers of image dependencies in a single workflow
+# - we allow every image (including variants) to be built in parallel
+# - workflowBuild could be dispatched with a specific directory and variant to build a single image
+# - workflowBuild could be scheduled to run periodically, e.g. every week
+
+

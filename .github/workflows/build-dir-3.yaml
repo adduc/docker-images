@@ -63,11 +63,17 @@ jobs:
     needs: preflight
     if: needs.preflight.outputs.is_image == 'false'
     runs-on: ubuntu-24.04
-    uses: ./.github/workflows/build.yaml
     strategy:
       fail-fast: false
       matrix:
         directory: ${{ fromJson(needs.preflight.outputs.list_base) }}
+    jobs:
+      error:
+        runs-on: ubuntu-24.04
+        steps:
+          - run: |
+              echo "Due to workflow depth limitations, we cannot build this image."
+              exit 1
 
 
   # # if this directory represents a folder with multiple images, build
@@ -89,3 +95,5 @@ jobs:
 # - we allow every image (including variants) to be built in parallel
 # - workflowBuild could be dispatched with a specific directory and variant to build a single image
 # - workflowBuild could be scheduled to run periodically, e.g. every week
+
+
