@@ -20,10 +20,10 @@ jobs:
     # checkout, determine whether this is an image or directory
     runs-on: ubuntu-24.04
     outputs:
-      is_image: ${{ steps.is-image.outputs.is_image }}
-      list: ${{ steps.list.outputs.list }}
-      list_base: ${{ steps.list.outputs.list_base }}
-      list_baseless: ${{ steps.list.outputs.list_baseless }}
+      is_image: ${{ steps.calculation.outputs.is_image }}
+      list: ${{ steps.calculation.outputs.list }}
+      list_base: ${{ steps.calculation.outputs.list_base }}
+      list_baseless: ${{ steps.calculation.outputs.list_baseless }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,17 +33,13 @@ jobs:
           set -o pipefail -o errexit -o nounset
           cp .ci.env .env
 
-      - name: Determine if this is an image or directory
-        id: is-image
+      - name: Calculate Outputs
+        id: calculation
         run: |
           set -o pipefail -o errexit -o nounset
           [ -f Dockerfile ] && IS_IMAGE="true" || IS_IMAGE="false"
-          echo "is_image=$IS_IMAGE" | tee -a $GITHUB_OUTPUT
 
-      - name: List variants/directories
-        id: list
-        run: |
-          set -o pipefail -o errexit -o nounset
+          echo "is_image=$IS_IMAGE" | tee -a $GITHUB_OUTPUT
           echo "list=$(make list | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
           echo "list_base=$(make list-base | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
           echo "list_baseless=$(make list-baseless | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
