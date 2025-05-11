@@ -28,8 +28,8 @@ jobs:
     outputs:
       is_image: ${{ steps.is-image.outputs.is_image }}
       list: ${{ steps.list.outputs.list }}
-      list_base: ${{ steps.list.outputs.list-base }}
-      list_baseless: ${{ steps.list.outputs.list-baseless }}
+      list_base: ${{ steps.list.outputs.list_base }}
+      list_baseless: ${{ steps.list.outputs.list_baseless }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
