@@ -13,7 +13,7 @@ on:
         type: string
 
 jobs:
-  preflight:
+  gather-metadata:
     # checkout, determine whether this is an image or directory
     runs-on: ubuntu-24.04
     outputs:
@@ -35,12 +35,12 @@ jobs:
   # if this directory represents a folder with multiple images, build
   # the base images (if any)
   build-base:
-    needs: preflight
-    if: needs.preflight.outputs.is_image == 'false'
+    needs: gather-metadata
+    if: needs.gather-metadata.outputs.is_image == 'false'
     strategy:
       fail-fast: false
       matrix:
-        directory: ${{ fromJson(needs.preflight.outputs.list_base) }}
+        directory: ${{ fromJson(needs.gather-metadata.outputs.list_base) }}
     runs-on: ubuntu-24.04
     steps:
       - run: |
@@ -51,12 +51,12 @@ jobs:
   # if this directory represents a folder with multiple images, build
   # the non-base images (if any)
   build-non-base:
-    needs: [preflight, build-base]
-    if: needs.preflight.outputs.is_image == 'false'
+    needs: [gather-metadata, build-base]
+    if: needs.gather-metadata.outputs.is_image == 'false'
     strategy:
       fail-fast: false
       matrix:
-        directory: ${{ fromJson(needs.preflight.outputs.list_baseless) }}
+        directory: ${{ fromJson(needs.gather-metadata.outputs.list_baseless) }}
     runs-on: ubuntu-24.04
     steps:
       - run: |
@@ -65,12 +65,12 @@ jobs:
 
   # if this directory represents an image, build it
   build-image:
-    needs: preflight
-    if: needs.preflight.outputs.is_image == 'true'
+    needs: gather-metadata
+    if: needs.gather-metadata.outputs.is_image == 'true'
     strategy:
       fail-fast: false
       matrix:
-        variant: ${{ fromJson(needs.preflight.outputs.list) }}
+        variant: ${{ fromJson(needs.gather-metadata.outputs.list) }}
     runs-on: "${{ contains(matrix.variant, 'arm64') && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}"
     steps:
       - name: Checkout
