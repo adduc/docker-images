@@ -6,9 +6,6 @@
 
 name: Build Docker Images
 
-env:
-  NAMESPACE: adduc
-
 on:
   push:
 
@@ -31,6 +28,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Prepare .env file
+        run: |
+          set -o pipefail -o errexit -o nounset
+          cp .ci.env .env
 
       - name: Determine if this is an image or directory
         id: is-image
