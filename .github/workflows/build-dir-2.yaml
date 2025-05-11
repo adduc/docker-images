@@ -34,7 +34,7 @@ jobs:
     uses: ./.github/workflows/build-dir-3.yaml
     secrets: inherit
     with:
-      directory: ${{ matrix.directory }}
+      directory: ${{ inputs.directory }}/${{ matrix.directory }}
       tag_prefix: ${{ inputs.tag_prefix }}
 
 
@@ -50,7 +50,7 @@ jobs:
     uses: ./.github/workflows/build-dir-3.yaml
     secrets: inherit
     with:
-      directory: ${{ matrix.directory }}
+      directory: ${{ inputs.directory }}/${{ matrix.directory }}
       tag_prefix: ${{ inputs.tag_prefix }}
 
 
