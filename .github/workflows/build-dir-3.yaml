@@ -67,13 +67,10 @@ jobs:
       fail-fast: false
       matrix:
         directory: ${{ fromJson(needs.preflight.outputs.list_base) }}
-    jobs:
-      error:
-        runs-on: ubuntu-24.04
-        steps:
-          - run: |
-              echo "Due to workflow depth limitations, we cannot build this image."
-              exit 1
+    steps:
+      - run: |
+          echo "Due to workflow depth limitations, we cannot build this image."
+          exit 1
 
 
   # # if this directory represents a folder with multiple images, build
