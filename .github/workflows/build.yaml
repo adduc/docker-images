@@ -9,8 +9,11 @@ name: Build Docker Images
 on:
   push:
 
-  # workflow_call:
-  #   inputs:
+  workflow_call:
+    inputs:
+      directory:
+        required: true
+        type: string
 
 # Ensure that there is only ever one build running at a time for a given
 # branch
@@ -25,6 +28,8 @@ jobs:
     outputs:
       is_image: ${{ steps.is-image.outputs.is_image }}
       list: ${{ steps.list.outputs.list }}
+      list_base: ${{ steps.list.outputs.list-base }}
+      list_baseless: ${{ steps.list.outputs.list-baseless }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,14 +51,24 @@ jobs:
         run: |
           set -o pipefail -o errexit -o nounset
           echo "list=$(make list)" | tee $GITHUB_OUTPUT
+          echo "list-base=$(make list-base)" | tee $GITHUB_OUTPUT
+          echo "list-baseless=$(make list-baseless)" | tee $GITHUB_OUTPUT
 
   # # If this directory represents an image that can be built, build it
   # build:
 
-
-  # # if this directory represents a folder with multiple images, build
-  # # the base images (if any)
-  # build-base:
+  # if this directory represents a folder with multiple images, build
+  # the base images (if any)
+  build-base:
+    needs: preflight
+    if: needs.preflight.outputs.is_image == 'false'
+    runs-on: ubuntu-24.04
+    matrix:
+      directory: ${{ fromJson(needs.preflight.outputs.list_base) }}
+    steps:
+      - uses: ./.github/workflows/build.yaml
+        with:
+          directory: ${{ matrix.directory }}
 
   # # if this directory represents a folder with multiple images, build
   # # the non-base images (if any)

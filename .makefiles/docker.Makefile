@@ -42,6 +42,12 @@ TAG ?= $(VERSION)-$(PLATFORM)
 list:
 	@echo $(VARIANTS)
 
+list-base:
+	@echo ""
+
+list-baseless:
+	@echo ""
+
 # build all variants
 build: $(VARIANTS:%=build-%)
 

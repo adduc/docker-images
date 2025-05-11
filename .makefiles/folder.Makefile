@@ -34,6 +34,12 @@ MAKE_CMD := $(MAKE) --no-print-directory
 list:
 	@echo $(DIRS)
 
+list-base:
+	@echo $(BASE_DIRS)
+
+list-baseless:
+	@echo $(BASELESS_DIRS)
+
 # {action} (e.g. build)
 $(ACTIONS):
 	@[ -z "$(BASE_DIRS)" ] || $(MAKE) --no-print-directory $(BASE_DIRS:%=$(ACTION)-%)
