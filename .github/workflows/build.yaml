@@ -44,15 +44,15 @@ jobs:
         run: |
           set -o pipefail -o errexit -o nounset
           [ -f Dockerfile ] && IS_IMAGE="true" || IS_IMAGE="false"
-          echo "is_image=$IS_IMAGE" | tee $GITHUB_OUTPUT
+          echo "is_image=$IS_IMAGE" | tee -a $GITHUB_OUTPUT
 
       - name: List variants/directories
         id: list
         run: |
           set -o pipefail -o errexit -o nounset
-          echo "list=$(make list | jq -R -c 'split(" ")')" | tee $GITHUB_OUTPUT
-          echo "list_base=$(make list-base | jq -R -c 'split(" ")')" | tee $GITHUB_OUTPUT
-          echo "list_baseless=$(make list-baseless | jq -R -c 'split(" ")')" | tee $GITHUB_OUTPUT
+          echo "list=$(make list | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
+          echo "list_base=$(make list-base | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
+          echo "list_baseless=$(make list-baseless | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
 
   # # If this directory represents an image that can be built, build it
   # build:
