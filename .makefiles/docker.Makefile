@@ -36,8 +36,11 @@ WORD_2 = $(word 2,$(subst -, ,$@))
 VERSION = $(WORD_2)
 PLATFORM = $(word 3,$(subst -, ,$@))
 
-BUILD_ARGS ?= NAMESPACE=$(NAMESPACE) VERSION=$(VERSION) PLATFORM=$(PLATFORM)
-BUILD_ARGS_STRING ?= $(foreach arg,$(BUILD_ARGS),--build-arg $(arg))
+BUILD_ARGS_BASE ?= NAMESPACE=$(NAMESPACE) PLATFORM=$(PLATFORM) TAG_PREFIX=$(TAG_PREFIX)
+BUILD_ARGS ?= VERSION=$(VERSION)
+BUILD_ARGS_STRING ?= \
+	$(foreach arg,$(BUILD_ARGS_BASE),--build-arg $(arg)) \
+	$(foreach arg,$(BUILD_ARGS),--build-arg $(arg))
 
 TAG ?= $(VERSION)-$(PLATFORM)
 FQTAG ?= $(NAMESPACE)/$(IMAGE):$(TAG_PREFIX)$(TAG)
