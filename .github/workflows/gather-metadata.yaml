@@ -30,6 +30,13 @@ jobs:
       list_base: ${{ steps.gather-metadata.outputs.list_base }}
       list_baseless: ${{ steps.gather-metadata.outputs.list_baseless }}
     steps:
+
+      - shell: bash
+        run: |
+          echo GITHUB_HEAD_REF=${{ github.head_ref }}
+          echo GITHUB_REF=${{ github.ref }}
+          echo TAG_PREFIX=$TAG_PREFIX
+
       - name: Checkout
         uses: actions/checkout@v4
       - name: Prepare .env file
