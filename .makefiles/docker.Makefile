@@ -69,5 +69,10 @@ $(VARIANTS:%=build-%):
 	@docker build \
 		$(BUILD_ARGS_STRING) \
 	  	--platform linux/$(PLATFORM) \
-		--tag $(NAMESPACE)/$(IMAGE):$(TAG) \
+		--tag $(NAMESPACE)/$(IMAGE):$(TAG_PREFIX)$(TAG) \
 		.
+
+# push a specific variant
+$(VARIANTS:%=push-%):
+	@echo -e "\e[1;32mPushing $(NAMESPACE)/$(IMAGE):$(TAG)\e[0m..."
+	@docker push $(NAMESPACE)/$(IMAGE):$(TAG_PREFIX)$(TAG)

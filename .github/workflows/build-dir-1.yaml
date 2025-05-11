@@ -3,8 +3,10 @@
 # This is a GitHub Actions workflow that builds Docker images
 ##
 
+name: Build
 
-name: Build (Layer 1)
+env:
+  TAG_PREFIX: ${{ github.ref == 'refs/heads/main' && '' || github.ref_name + '-' }}
 
 on:
   push:
@@ -21,11 +23,6 @@ jobs:
     with:
       directory: .
 
-  # # If this directory represents an image that can be built, build it
-  # build:
-
-  # if this directory represents a folder with multiple images, build
-  # the base images (if any)
   build-base:
     needs: gather-metadata
     if: needs.gather-metadata.outputs.is_image == 'false'
@@ -37,9 +34,6 @@ jobs:
     with:
       directory: ${{ matrix.directory }}
 
-
-  # if this directory represents a folder with multiple images, build
-  # the non-base images (if any)
   build-non-base:
     needs: [gather-metadata, build-base]
     if: needs.gather-metadata.outputs.is_image == 'false'
@@ -51,8 +45,6 @@ jobs:
     with:
       directory: ${{ matrix.directory }}
 
-
-  # if this directory represents an image, build it
   build-image:
     needs: gather-metadata
     if: needs.gather-metadata.outputs.is_image == 'true'

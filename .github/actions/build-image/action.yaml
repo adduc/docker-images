@@ -22,3 +22,10 @@ runs:
         set -o pipefail -o errexit -o nounset
         cd ${{ inputs.directory }}
         make build-${{ inputs.variant }}
+
+    - name: Push Image
+      shell: bash
+      run: |
+        set -o pipefail -o errexit -o nounset
+        cd ${{ inputs.directory }}
+        make push-${{ inputs.variant }}

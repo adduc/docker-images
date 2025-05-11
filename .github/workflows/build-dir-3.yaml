@@ -3,8 +3,6 @@
 # This is a GitHub Actions workflow that builds Docker images
 ##
 
-name: Build (Layer 3)
-
 on:
   workflow_call:
     inputs:
