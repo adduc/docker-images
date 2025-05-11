@@ -68,6 +68,7 @@ $(VERSIONS:%=build-%):
 # build a specific variant
 $(VARIANTS:%=build-%):
 	@echo -e "\e[1;32mBuilding $(NAMESPACE)/$(IMAGE):$(TAG)\e[0m..."
+	@echo -e "\e[1;32mUsing build args: $(BUILD_ARGS)\e[0m..."
 
 	@docker build \
 		$(BUILD_ARGS_STRING) \
