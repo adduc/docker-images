@@ -7,6 +7,19 @@ on:
       directory:
         required: true
         type: string
+    outputs:
+      is_image:
+        description: 'Is this directory an image?'
+        value: ${{ steps.gather-metadata.outputs.is_image }}
+      list:
+        description: 'List of image variants in this directory'
+        value: ${{ steps.gather-metadata.outputs.list }}
+      list_base:
+        description: 'List of base image directories in this directory'
+        value: ${{ steps.gather-metadata.outputs.list_base }}
+      list_baseless:
+        description: 'List of non-base image directories in this directory'
+        value: ${{ steps.gather-metadata.outputs.list_baseless }}
 
 jobs:
   gather-metadata:
