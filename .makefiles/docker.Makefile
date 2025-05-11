@@ -39,20 +39,8 @@ BUILD_ARGS_STRING ?= $(foreach arg,$(BUILD_ARGS),--build-arg $(arg))
 
 TAG ?= $(VERSION)-$(PLATFORM)
 
-.PHONY: all clean build test help $(PLATFORMS:%=build-%)
-
-help:
-
-all: build ## Build all variants of the Docker image
-
-test:
-	# ghcr.io/googlecontainertools/container-structure-test:1.19.3
-	@todo use container-structure-test to test the image
-	@exit 1
-
-clean: ## Clean up all built images
-	@echo "Cleaning up all built images..."
-	@docker rmi -f $(foreach v,$(VARIANTS),$(NAMESPACE)/$(IMAGE):$(v)) || true
+list:
+	@echo $(VARIANTS)
 
 # build all variants
 build: $(VARIANTS:%=build-%)

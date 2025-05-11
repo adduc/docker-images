@@ -31,6 +31,9 @@ BASELESS_DIRS = $(filter-out base%,$(DIRS))
 
 MAKE_CMD := $(MAKE) --no-print-directory
 
+list:
+	@echo $(DIRS)
+
 # {action} (e.g. build)
 $(ACTIONS):
 	@[ -z "$(BASE_DIRS)" ] || $(MAKE) --no-print-directory $(BASE_DIRS:%=$(ACTION)-%)
