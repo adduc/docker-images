@@ -17,7 +17,9 @@ endif
 
 ifndef IMAGE
 IMAGE := $(shell basename $(IMG_DIR))
+ifndef QUIET
 $(info IMAGE is not set, defaulting to directory name $(IMAGE))
+endif
 endif
 
 ifndef PLATFORMS

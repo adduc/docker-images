@@ -3,7 +3,9 @@ ROOT_DIR := $(shell dirname $(shell dirname $(realpath $(lastword $(MAKEFILE_LIS
 ifneq ($(wildcard $(ROOT_DIR)/.env),)
 include $(ROOT_DIR)/.env
 else
+ifndef QUIET
 $(info no .env file found in $(ROOT_DIR))
+endif
 endif
 
 ifndef NAMESPACE
