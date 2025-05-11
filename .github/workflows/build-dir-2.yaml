@@ -32,6 +32,7 @@ jobs:
       matrix:
         directory: ${{ fromJson(needs.gather-metadata.outputs.list_base) }}
     uses: ./.github/workflows/build-dir-3.yaml
+    secrets: inherit
     with:
       directory: ${{ matrix.directory }}
       tag_prefix: ${{ inputs.tag_prefix }}
@@ -47,6 +48,7 @@ jobs:
       matrix:
         directory: ${{ fromJson(needs.gather-metadata.outputs.list_baseless) }}
     uses: ./.github/workflows/build-dir-3.yaml
+    secrets: inherit
     with:
       directory: ${{ matrix.directory }}
       tag_prefix: ${{ inputs.tag_prefix }}
