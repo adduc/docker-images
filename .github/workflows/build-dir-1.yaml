@@ -35,7 +35,10 @@ jobs:
 
   build-non-base:
     needs: [gather-metadata, build-base]
-    if: needs.gather-metadata.outputs.is_image == 'false' && needs.gather-metadata.outputs.list_baseless != '[]'
+    if: |
+      always() &&
+      needs.gather-metadata.outputs.is_image == 'false' &&
+      (needs.gather-metadata.outputs.list_base == '[]' || needs.build-base.result == 'success')
     strategy:
       fail-fast: false
       matrix:
