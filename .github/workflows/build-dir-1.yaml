@@ -22,7 +22,7 @@ jobs:
 
   build-base:
     needs: gather-metadata
-    if: needs.gather-metadata.outputs.is_image == 'false'
+    if: needs.gather-metadata.outputs.is_image == 'false' && needs.gather-metadata.outputs.list_base != '[]'
     strategy:
       fail-fast: false
       matrix:
@@ -35,7 +35,7 @@ jobs:
 
   build-non-base:
     needs: [gather-metadata, build-base]
-    if: needs.gather-metadata.outputs.is_image == 'false'
+    if: needs.gather-metadata.outputs.is_image == 'false' && needs.gather-metadata.outputs.list_baseless != '[]'
     strategy:
       fail-fast: false
       matrix:
