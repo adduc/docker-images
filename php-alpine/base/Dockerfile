@@ -9,8 +9,13 @@ ARG PHP_VERSION="84"
 ARG REQUIRED_PKGS="\
   php${PHP_VERSION}-cli \
   php${PHP_VERSION}-curl \
+  php${PHP_VERSION}-mbstring \
+  php${PHP_VERSION}-openssl \
   php${PHP_VERSION}-opcache \
   php${PHP_VERSION}-pdo \
+  php${PHP_VERSION}-pdo_sqlite \
+  php${PHP_VERSION}-session \
+  php${PHP_VERSION}-tokenizer \
   php${PHP_VERSION}-xml \
 "
 
