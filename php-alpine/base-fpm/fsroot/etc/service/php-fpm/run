@@ -1,0 +1,16 @@
+#!/bin/sh
+
+main() {
+  mkdir -p /var/log/php
+
+  # if PHP_FPM_ENABLED is 0, sleep forever, else start php-fpm
+  if [ "${PHP_FPM_ENABLED:-1}" = "0" ]; then
+    echo "PHP-FPM is disabled, sleeping as a placeholder"
+    sleep infinity &
+    wait
+  else
+    php-fpm -F
+  fi
+}
+
+main >> /var/log/svc/php-fpm.log 2>&1

@@ -37,6 +37,35 @@ process_vhost_php_env_vars() {
   done
 }
 
+##
+# Route all non-static requests index.php
+# VHOST_INDEX_PHP_<NAME>=<SERVER_NAME> <ROOT_DIR> <PHP_ENDPOINT>
+##
+process_vhost_index_php_env_vars() {
+  VHOSTS=$(env | grep "^VHOST_INDEX_PHP_" | sed "s/^VHOST_INDEX_PHP_${KV_REGEX}$/\1 \2/" || true)
+  [ -z "$VHOSTS" ] && return
+
+  # don't expand wildcards
+  set -o noglob
+
+  IFS=$'\n'
+  for VHOST in $VHOSTS; do
+    unset IFS
+    set $VHOST
+    NAME=$1
+    SERVER_NAME=$2
+    ROOT_DIR=$3
+    PHP_ENDPOINT=$4
+
+    cat /etc/nginx/templates/vhost.index.php.conf \
+    | sed "\
+      s|{{ SERVER_NAME }}|$SERVER_NAME|g;\
+      s|{{ ROOT_DIR }}|$ROOT_DIR|g;\
+      s|{{ PHP_ENDPOINT }}|$PHP_ENDPOINT|g" \
+    > /etc/nginx/http.d/$NAME.index.php.conf
+  done
+}
+
 process_vhost_static_env_vars() {
   # find VHOST_STATIC_* env vars
   # cat /etc/nginx/templates/vhost.static.conf to /etc/nginx/http.d/$NAME.static.conf

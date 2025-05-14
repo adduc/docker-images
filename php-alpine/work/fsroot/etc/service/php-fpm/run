@@ -1,5 +1,0 @@
-#!/bin/sh
-
-mkdir -p /var/log/php
-
-php-fpm -F

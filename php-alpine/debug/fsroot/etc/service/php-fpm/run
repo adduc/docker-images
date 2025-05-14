@@ -1,9 +1,0 @@
-#!/bin/sh
-
-
-main() {
-  mkdir -p /var/log/php
-  php-fpm -F
-}
-
-main >> /var/log/svc/php-fpm.log 2>&1 &
