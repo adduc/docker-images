@@ -27,9 +27,15 @@ ARG REQUIRED_PKGS="\
   php${PHP_VERSION}-pecl-pcov \
   php${PHP_VERSION}-pecl-redis \
   php${PHP_VERSION}-pecl-xdebug \
+  php${PHP_VERSION}-phar \
   php${PHP_VERSION}-phpdbg \
   php${PHP_VERSION}-session \
   php${PHP_VERSION}-tokenizer \
 "
 
 RUN apk add --no-cache $REQUIRED_PKGS
+
+RUN wget \
+  https://getcomposer.org/download/latest-stable/composer.phar \
+  -O /usr/local/bin/composer \
+  && chmod +x /usr/local/bin/composer
