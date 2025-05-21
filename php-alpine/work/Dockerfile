@@ -17,11 +17,15 @@ ARG PHP_VERSION="84"
 ARG REQUIRED_PKGS="\
   php${PHP_VERSION}-curl \
   php${PHP_VERSION}-ctype \
+  php${PHP_VERSION}-dom \
   php${PHP_VERSION}-mbstring \
   php${PHP_VERSION}-openssl \
+  php${PHP_VERSION}-pcntl \
   php${PHP_VERSION}-pdo \
   php${PHP_VERSION}-pdo_sqlite \
   php${PHP_VERSION}-pdo_pgsql \
+  php${PHP_VERSION}-posix \
+  php${PHP_VERSION}-redis \
   php${PHP_VERSION}-session \
   php${PHP_VERSION}-tokenizer \
 "
