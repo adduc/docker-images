@@ -32,6 +32,7 @@ jobs:
       list: ${{ steps.gather-metadata.outputs.list }}
       list_base: ${{ steps.gather-metadata.outputs.list_base }}
       list_baseless: ${{ steps.gather-metadata.outputs.list_baseless }}
+      tag_prefix: ${{ steps.gather-metadata.outputs.tag_prefix }}
     steps:
 
       - shell: bash
