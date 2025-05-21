@@ -31,16 +31,16 @@ process_fpm_pool_env_vars() {
     LISTEN_ADDRESS=$2
     NUM_CHILDREN=$3
 
-    UID=$(get_var "${NAME}_FPM_POOL_UID")
-    GID=$(get_var "${NAME}_FPM_POOL_GID")
+    UID=$(get_var "${NAME}_FPM_POOL_UID" nobody)
+    GID=$(get_var "${NAME}_FPM_POOL_GID" nobody)
 
     cat /etc/php/templates/pool.conf \
     | sed "\
       s|{{ NAME }}|$NAME|g;\
       s|{{ LISTEN_ADDRESS }}|$LISTEN_ADDRESS|g;\
       s|{{ NUM_CHILDREN }}|$NUM_CHILDREN|g; \
-      s|{{ UID }}|${UID:nobody}|g;\
-      s|{{ GID }}|${GID:nobody}|g" \
+      s|{{ UID }}|${UID}|g;\
+      s|{{ GID }}|${GID}|g" \
     > /etc/php/php-fpm.d/$NAME.conf
   done
 }
