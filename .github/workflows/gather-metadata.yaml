@@ -20,6 +20,9 @@ on:
       list_baseless:
         description: 'List of non-base image directories in this directory'
         value: ${{ jobs.gather-metadata.outputs.list_baseless }}
+      tag_prefix:
+        description: 'Tag prefix for the images'
+        value: ${{ jobs.gather-metadata.outputs.tag_prefix }}
 
 jobs:
   gather-metadata:
@@ -36,6 +39,8 @@ jobs:
           echo GITHUB_HEAD_REF=${{ github.head_ref }}
           echo GITHUB_REF=${{ github.ref }}
           echo TAG_PREFIX=$TAG_PREFIX
+          echo GITHUB_REF_NAME=${{ github.ref_name }}
+          echo GITHUB_REF=${{ github.ref }}
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,8 +57,10 @@ jobs:
           set -o pipefail -o errexit -o nounset
           cd ${{ inputs.directory }}
           [ -f Dockerfile ] && IS_IMAGE="true" || IS_IMAGE="false"
+          [ "${{ github.ref }}" == "refs/heads/main" ] || tag_prefix="${{ github.ref_name }}-"
 
           echo "is_image=$IS_IMAGE" | tee -a $GITHUB_OUTPUT
           echo "list=$(make list | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
           echo "list_base=$(make list-base | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
           echo "list_baseless=$(make list-baseless | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
+          echo "tag_prefix=${tag_prefix:-}" | tee -a $GITHUB_OUTPUT
