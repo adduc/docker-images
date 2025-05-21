@@ -1,0 +1,33 @@
+#!/bin/sh
+##
+# This script runs dillon's lightweight cron daemon (dcron) in the
+# foreground, along with ensuring that all necessary directories for
+# logrotate and cron are created.
+#
+# It is expected to be run as a long-lived service.
+# It will log all output to /var/log/cron.log.
+##
+
+# Configure the shell to exit on errors, treat unset variables as errors,
+# and error on any piped commands that fail
+set -o nounset -o errexit -o pipefail
+
+# Echo each command before executing it if DEBUG is set
+[ -z "${DEBUG:-}" ] || set -o xtrace
+
+prepare_logrotate() {
+  touch /var/log/messages
+  chmod 644 -R /etc/logrotate.d/*
+}
+
+run_cron() {
+  mkdir -p /etc/cron.d /var/spool/cron/crontabs /var/log/cron
+  exec crond -l info -f
+}
+
+main() {
+  prepare_logrotate
+  run_cron
+}
+
+main "$@" >> /var/log/cron.log 2>&1

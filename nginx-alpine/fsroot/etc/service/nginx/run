@@ -1,0 +1,27 @@
+#!/bin/sh
+##
+# This script runs dillon's lightweight cron daemon (dcron) in the
+# foreground, along with ensuring that all necessary directories for
+# logrotate and cron are created.
+#
+# It is expected to be run as a long-lived service.
+# It will log all output to /var/log/cron.log.
+##
+
+# Configure the shell to exit on errors, treat unset variables as errors,
+# and error on any piped commands that fail
+set -o nounset -o errexit -o pipefail
+
+# Echo each command before executing it if DEBUG is set
+[ -z "${DEBUG:-}" ] || set -o xtrace
+
+run_nginx() {
+  mkdir -p /var/log/nginx
+  nginx -g 'daemon off;'
+}
+
+main() {
+  run_nginx
+}
+
+main > /var/log/svc/nginx.log 2>&1

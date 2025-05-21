@@ -1,0 +1,70 @@
+---
+##
+# This is a GitHub Actions workflow that builds Docker images
+##
+
+name: Build
+
+on:
+  push:
+
+# Ensure that there is only ever one build running at a time for a given
+# branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gather-metadata:
+    uses: ./.github/workflows/gather-metadata.yaml
+    with:
+      directory: .
+
+  build-base:
+    needs: gather-metadata
+    if: needs.gather-metadata.outputs.is_image == 'false' && needs.gather-metadata.outputs.list_base != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: ${{ fromJson(needs.gather-metadata.outputs.list_base) }}
+    uses: ./.github/workflows/build-dir-2.yaml
+    secrets: inherit
+    with:
+      directory: ${{ matrix.directory }}
+      tag_prefix: ${{ github.ref == 'refs/heads/main' && '' || format('{0}-', github.ref_name) }}
+
+  build-non-base:
+    needs: [gather-metadata, build-base]
+    if: |
+      always() &&
+      needs.gather-metadata.outputs.is_image == 'false' &&
+      (needs.gather-metadata.outputs.list_base == '[]' || needs.build-base.result == 'success')
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: ${{ fromJson(needs.gather-metadata.outputs.list_baseless) }}
+    uses: ./.github/workflows/build-dir-2.yaml
+    secrets: inherit
+    with:
+      directory: ${{ matrix.directory }}
+      tag_prefix: ${{ github.ref == 'refs/heads/main' && '' || format('{0}-', github.ref_name) }}
+
+  build-image:
+    needs: gather-metadata
+    if: needs.gather-metadata.outputs.is_image == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: ${{ fromJson(needs.gather-metadata.outputs.list) }}
+    runs-on: "${{ contains(matrix.variant, 'arm64') && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: ./.github/actions/build-image
+        with:
+          directory: .
+          variant: ${{ matrix.variant }}
+          tag_prefix: ${{ github.ref == 'refs/heads/main' && '' || format('{0}-', github.ref_name) }}
+          docker_username: ${{ secrets.DOCKER_USERNAME }}
+          docker_password: ${{ secrets.DOCKER_PASSWORD }}

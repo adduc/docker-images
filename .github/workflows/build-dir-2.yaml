@@ -1,0 +1,80 @@
+---
+##
+# This is a GitHub Actions workflow that builds Docker images
+##
+
+on:
+  workflow_call:
+    inputs:
+      directory:
+        required: true
+        type: string
+      tag_prefix:
+        required: true
+        type: string
+
+jobs:
+  gather-metadata:
+    uses: ./.github/workflows/gather-metadata.yaml
+    with:
+      directory: ${{ inputs.directory }}
+
+  # # If this directory represents an image that can be built, build it
+  # build:
+
+  # if this directory represents a folder with multiple images, build
+  # the base images (if any)
+  build-base:
+    needs: gather-metadata
+    if: needs.gather-metadata.outputs.is_image == 'false' && needs.gather-metadata.outputs.list_base != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: ${{ fromJson(needs.gather-metadata.outputs.list_base) }}
+    uses: ./.github/workflows/build-dir-3.yaml
+    secrets: inherit
+    with:
+      directory: ${{ inputs.directory }}/${{ matrix.directory }}
+      tag_prefix: ${{ inputs.tag_prefix }}
+
+
+  # if this directory represents a folder with multiple images, build
+  # the non-base images (if any)
+  build-non-base:
+    needs: [gather-metadata, build-base]
+    if: |
+      always() &&
+      needs.gather-metadata.outputs.is_image == 'false' &&
+      (needs.gather-metadata.outputs.list_base == '[]' || needs.build-base.result == 'success')
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: ${{ fromJson(needs.gather-metadata.outputs.list_baseless) }}
+    uses: ./.github/workflows/build-dir-3.yaml
+    secrets: inherit
+    with:
+      directory: ${{ inputs.directory }}/${{ matrix.directory }}
+      tag_prefix: ${{ inputs.tag_prefix }}
+
+
+  # if this directory represents an image, build it
+  build-image:
+    needs: gather-metadata
+    if: needs.gather-metadata.outputs.is_image == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: ${{ fromJson(needs.gather-metadata.outputs.list) }}
+    runs-on: "${{ contains(matrix.variant, 'arm64') && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: ./.github/actions/build-image
+        with:
+          directory: ${{ inputs.directory }}
+          variant: ${{ matrix.variant }}
+          tag_prefix: ${{ inputs.tag_prefix }}
+          docker_username: ${{ secrets.DOCKER_USERNAME }}
+          docker_password: ${{ secrets.DOCKER_PASSWORD }}
+

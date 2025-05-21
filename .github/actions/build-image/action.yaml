@@ -1,0 +1,46 @@
+name: Build Image
+inputs:
+  directory:
+    description: 'Directory where the image is located'
+    required: true
+  variant:
+    description: 'Variant of the image to build'
+    required: true
+  tag_prefix:
+    description: 'Tag prefix to use for the image'
+    required: true
+  docker_username:
+    description: 'Docker username'
+    required: true
+  docker_password:
+    description: 'Docker password'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Prepare .env file
+      shell: bash
+      run: |
+        set -o pipefail -o errexit -o nounset
+        cp .ci.env .env
+
+    - name: Build Image
+      shell: bash
+      run: |
+        set -o pipefail -o errexit -o nounset
+        cd ${{ inputs.directory }}
+        make build-${{ inputs.variant }} TAG_PREFIX=${{ inputs.tag_prefix }}
+
+    - name: Login to Docker Hub
+      shell: bash
+      run: |
+        set -o pipefail -o errexit -o nounset
+        echo "${{ inputs.docker_password }}" | docker login -u "${{ inputs.docker_username }}" --password-stdin
+
+    - name: Push Image
+      shell: bash
+      run: |
+        set -o pipefail -o errexit -o nounset
+        cd ${{ inputs.directory }}
+        make push-${{ inputs.variant }} TAG_PREFIX=${{ inputs.tag_prefix }}
