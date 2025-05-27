@@ -7,6 +7,7 @@ FROM ${NAMESPACE}/base-alpine:${TAG_PREFIX}${VERSION}-${PLATFORM}
 ARG REQUIRED_PKGS="\
   ansible-core \
   ansible-lint \
+  openssh-client \
 "
 
 RUN apk add --no-cache $REQUIRED_PKGS
