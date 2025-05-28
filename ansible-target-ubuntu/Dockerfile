@@ -29,8 +29,10 @@ RUN systemctl enable /lib/systemd/system/ssh.service \
 # for running ansible playbooks
 ENV UID=1000 GID=1000 USER=ansible
 
-RUN deluser ubuntu
+# if version is 22.04, skip deluser
 
+ARG VERSION
+RUN if [ "${VERSION}" != "22.04" ]; then deluser ubuntu; fi
 
 # Systemd does not trap the default stop signal that docker
 # uses, SIGTERM, so we need to set the stop signal to the signal systemd
