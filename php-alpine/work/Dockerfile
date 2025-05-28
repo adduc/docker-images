@@ -18,11 +18,14 @@ ARG REQUIRED_PKGS="\
   php${PHP_VERSION}-curl \
   php${PHP_VERSION}-ctype \
   php${PHP_VERSION}-dom \
+  php${PHP_VERSION}-ffi \
   php${PHP_VERSION}-fileinfo \
   php${PHP_VERSION}-iconv \
   php${PHP_VERSION}-mbstring \
   php${PHP_VERSION}-openssl \
   php${PHP_VERSION}-pecl-excimer \
+  php${PHP_VERSION}-pecl-grpc \
+  php${PHP_VERSION}-pecl-protobuf \
   php${PHP_VERSION}-pcntl \
   php${PHP_VERSION}-pdo \
   php${PHP_VERSION}-pdo_sqlite \
