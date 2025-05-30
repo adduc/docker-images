@@ -26,11 +26,12 @@ jobs:
       fail-fast: false
       matrix:
         directory: ${{ fromJson(needs.gather-metadata.outputs.list_base) }}
-    uses: ./.github/workflows/build-dir-4.yaml
-    secrets: inherit
-    with:
-      directory: ${{ inputs.directory }}/${{ matrix.directory }}
-      tag_prefix: ${{ inputs.tag_prefix }}
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          echo "Due to workflow depth limitations, we cannot build this image."
+          echo "Directory: ${{ inputs.directory }}/${{ matrix.directory }}"
+          exit 1
 
   build-non-base:
     needs: [gather-metadata, build-base]
@@ -42,11 +43,12 @@ jobs:
       fail-fast: false
       matrix:
         directory: ${{ fromJson(needs.gather-metadata.outputs.list_baseless) }}
-    uses: ./.github/workflows/build-dir-4.yaml
-    secrets: inherit
-    with:
-      directory: ${{ inputs.directory }}/${{ matrix.directory }}
-      tag_prefix: ${{ inputs.tag_prefix }}
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          echo "Due to workflow depth limitations, we cannot build this image."
+          echo "Directory: ${{ inputs.directory }}/${{ matrix.directory }}"
+          exit 1
 
   build-image:
     needs: gather-metadata
