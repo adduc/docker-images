@@ -11,4 +11,4 @@ TAG = $(PHP_VERSION)-local-$(OS_VERSION)-$(PLATFORM)
 
 # The include should happen after all variables are defined because the
 # included Makefile may rely on these variables.
-include ../../.makefiles/docker.Makefile
+include ../../../.makefiles/docker.Makefile
