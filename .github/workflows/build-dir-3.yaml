@@ -10,7 +10,7 @@ on:
         required: true
         type: string
       tag_prefix:
-        required: false
+        required: true
         type: string
 
 jobs:
@@ -19,11 +19,6 @@ jobs:
     with:
       directory: ${{ inputs.directory }}
 
-  # # If this directory represents an image that can be built, build it
-  # build:
-
-  # if this directory represents a folder with multiple images, build
-  # the base images (if any)
   build-base:
     needs: gather-metadata
     if: needs.gather-metadata.outputs.is_image == 'false' && needs.gather-metadata.outputs.list_base != '[]'
@@ -35,11 +30,9 @@ jobs:
     steps:
       - run: |
           echo "Due to workflow depth limitations, we cannot build this image."
+          echo "Directory: ${{ matrix.directory }}"
           exit 1
 
-
-  # if this directory represents a folder with multiple images, build
-  # the non-base images (if any)
   build-non-base:
     needs: [gather-metadata, build-base]
     if: |
@@ -54,9 +47,9 @@ jobs:
     steps:
       - run: |
           echo "Due to workflow depth limitations, we cannot build this image."
+          echo "Directory: ${{ matrix.directory }}"
           exit 1
 
-  # if this directory represents an image, build it
   build-image:
     needs: gather-metadata
     if: needs.gather-metadata.outputs.is_image == 'true'
