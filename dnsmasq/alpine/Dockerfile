@@ -1,0 +1,13 @@
+ARG NAMESPACE="local"
+ARG VERSION="3.22"
+ARG PLATFORM="amd64"
+ARG TAG_PREFIX=""
+FROM ${NAMESPACE}/base-alpine:${TAG_PREFIX}${VERSION}-${PLATFORM}
+
+ARG REQUIRED_PKGS="\
+  dnsmasq \
+"
+
+RUN apk add --no-cache $REQUIRED_PKGS
+
+ENV SERVICE_DNSMASQ="dnsmasq --no-daemon"
