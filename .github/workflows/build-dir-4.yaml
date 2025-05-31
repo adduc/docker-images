@@ -37,7 +37,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        base: [ ${{ inputs.directory }} ]
+        base: ${{ inputs.directory }}
         directory: ${{ fromJson(needs.gather-metadata.outputs.list_base) }}
     runs-on: ubuntu-24.04
     steps:
@@ -55,7 +55,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        base: [ ${{ inputs.directory }} ]
+        base: ${{ inputs.directory }}
         directory: ${{ fromJson(needs.gather-metadata.outputs.list_baseless) }}
     runs-on: ubuntu-24.04
     steps:
@@ -70,7 +70,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        directory: [ ${{ inputs.directory }} ]
+        directory: ${{ inputs.directory }}
         variant: ${{ fromJson(needs.gather-metadata.outputs.list) }}
     runs-on: "${{ contains(matrix.variant, 'arm64') && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}"
     steps:
