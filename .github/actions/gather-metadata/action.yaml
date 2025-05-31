@@ -1,40 +1,30 @@
 ---
 name: Gather Metadata
 
-on:
-  workflow_call:
-    inputs:
-      directory:
-        required: true
-        type: string
-    outputs:
-      is_image:
-        description: 'Is this directory an image?'
-        value: ${{ jobs.gather-metadata.outputs.is_image }}
-      list:
-        description: 'List of image variants in this directory'
-        value: ${{ jobs.gather-metadata.outputs.list }}
-      list_base:
-        description: 'List of base image directories in this directory'
-        value: ${{ jobs.gather-metadata.outputs.list_base }}
-      list_baseless:
-        description: 'List of non-base image directories in this directory'
-        value: ${{ jobs.gather-metadata.outputs.list_baseless }}
-      tag_prefix:
-        description: 'Tag prefix for the images'
-        value: ${{ jobs.gather-metadata.outputs.tag_prefix }}
+inputs:
+  directory:
+    description: 'Directory where the Makefile is located'
+    required: true
+outputs:
+  is_image:
+    description: 'Is this directory an image?'
+    value: ${{ steps.gather-metadata.outputs.is_image }}
+  list:
+    description: 'List of image variants in this directory'
+    value: ${{ steps.gather-metadata.outputs.list }}
+  list_base:
+    description: 'List of base image directories in this directory'
+    value: ${{ steps.gather-metadata.outputs.list_base }}
+  list_baseless:
+    description: 'List of non-base image directories in this directory'
+    value: ${{ steps.gather-metadata.outputs.list_baseless }}
+  tag_prefix:
+    description: 'Tag prefix for the images'
+    value: ${{ steps.gather-metadata.outputs.tag_prefix }}
 
-jobs:
-  gather-metadata:
-    runs-on: ubuntu-24.04
-    outputs:
-      is_image: ${{ steps.gather-metadata.outputs.is_image }}
-      list: ${{ steps.gather-metadata.outputs.list }}
-      list_base: ${{ steps.gather-metadata.outputs.list_base }}
-      list_baseless: ${{ steps.gather-metadata.outputs.list_baseless }}
-      tag_prefix: ${{ steps.gather-metadata.outputs.tag_prefix }}
-    steps:
-
+runs:
+  using: composite
+  steps:
       - shell: bash
         run: |
           echo GITHUB_HEAD_REF=${{ github.head_ref }}
