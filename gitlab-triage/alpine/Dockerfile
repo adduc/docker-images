@@ -1,4 +1,4 @@
-ARG OS_VERSION="3.21"
+ARG OS_VERSION="3.22"
 # ignored in this Dockerfile
 ARG PLATFORM="amd64"
 ARG TAG_PREFIX=""

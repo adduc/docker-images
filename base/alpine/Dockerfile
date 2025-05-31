@@ -1,6 +1,6 @@
 # ignored in this Dockerfile
 ARG NAMESPACE="local"
-ARG VERSION="3.21"
+ARG VERSION="3.22"
 # ignored in this Dockerfile
 ARG PLATFORM="amd64"
 FROM alpine:${VERSION}
