@@ -38,6 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        base: [.]
         directory: ${{ fromJson(needs.gather-metadata.outputs.list_base) }}
     uses: ./.github/workflows/build-dir-2.yaml
     secrets: inherit
@@ -54,6 +55,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        base: [.]
         directory: ${{ fromJson(needs.gather-metadata.outputs.list_baseless) }}
     uses: ./.github/workflows/build-dir-2.yaml
     secrets: inherit
@@ -67,6 +69,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        directory: [.]
         variant: ${{ fromJson(needs.gather-metadata.outputs.list) }}
     runs-on: "${{ contains(matrix.variant, 'arm64') && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}"
     steps:
