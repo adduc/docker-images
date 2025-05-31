@@ -1,6 +1,6 @@
 IMAGE := php-alpine
 
-VERSIONS := 84_3.21 84_edge
+VERSIONS := 84_3.21 84_3.22 84_edge
 
 PHP_VERSION = $(word 1,$(subst _, ,$(VERSION)))
 OS_VERSION = $(word 2,$(subst _, ,$(VERSION)))

@@ -1,5 +1,5 @@
 IMAGE := gitlab-triage-alpine
-VERSIONS := 1.44.5_3.21
+VERSIONS := 1.44.5_3.22
 
 TRIAGE_VERSION = $(word 1,$(subst _, ,$(VERSION)))
 OS_VERSION = $(word 2,$(subst _, ,$(VERSION)))
