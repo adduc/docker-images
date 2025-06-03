@@ -14,4 +14,5 @@ RUN apk add --no-cache $REQUIRED_PKGS
 # create user, add to abuild group, enable for doas
 RUN adduser -D user \
  && addgroup user abuild \
- && echo "permit nopass user as root" >> /etc/doas.conf
+ && echo "permit nopass user" >> /etc/doas.conf \
+ && echo "permit nopass root" >> /etc/doas.conf
