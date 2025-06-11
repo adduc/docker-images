@@ -15,21 +15,30 @@ on:
 
 jobs:
   gather-metadata:
-    uses: ./.github/workflows/gather-metadata.yaml
-    with:
-      directory: ${{ inputs.directory }}
+    runs-on: ubuntu-24.04
+    outputs:
+      is_image: ${{ steps.gather-metadata.outputs.is_image }}
+      list: ${{ steps.gather-metadata.outputs.list }}
+      list_base: ${{ steps.gather-metadata.outputs.list_base }}
+      list_baseless: ${{ steps.gather-metadata.outputs.list_baseless }}
+      tag_prefix: ${{ steps.gather-metadata.outputs.tag_prefix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  # # If this directory represents an image that can be built, build it
-  # build:
+      - uses: ./.github/actions/gather-metadata
+        id: gather-metadata
+        with:
+          directory: ${{ inputs.directory }}
 
-  # if this directory represents a folder with multiple images, build
-  # the base images (if any)
   build-base:
     needs: gather-metadata
     if: needs.gather-metadata.outputs.is_image == 'false' && needs.gather-metadata.outputs.list_base != '[]'
     strategy:
       fail-fast: false
       matrix:
+        base:
+          - ${{ inputs.directory }}
         directory: ${{ fromJson(needs.gather-metadata.outputs.list_base) }}
     uses: ./.github/workflows/build-dir-3.yaml
     secrets: inherit
@@ -37,9 +46,6 @@ jobs:
       directory: ${{ inputs.directory }}/${{ matrix.directory }}
       tag_prefix: ${{ inputs.tag_prefix }}
 
-
-  # if this directory represents a folder with multiple images, build
-  # the non-base images (if any)
   build-non-base:
     needs: [gather-metadata, build-base]
     if: |
@@ -49,6 +55,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        base:
+          - ${{ inputs.directory }}
         directory: ${{ fromJson(needs.gather-metadata.outputs.list_baseless) }}
     uses: ./.github/workflows/build-dir-3.yaml
     secrets: inherit
@@ -56,14 +64,14 @@ jobs:
       directory: ${{ inputs.directory }}/${{ matrix.directory }}
       tag_prefix: ${{ inputs.tag_prefix }}
 
-
-  # if this directory represents an image, build it
   build-image:
     needs: gather-metadata
     if: needs.gather-metadata.outputs.is_image == 'true'
     strategy:
       fail-fast: false
       matrix:
+        base:
+          - ${{ inputs.directory }}
         variant: ${{ fromJson(needs.gather-metadata.outputs.list) }}
     runs-on: "${{ contains(matrix.variant, 'arm64') && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}"
     steps:

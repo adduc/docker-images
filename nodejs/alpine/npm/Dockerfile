@@ -1,0 +1,11 @@
+ARG NAMESPACE="local"
+ARG VERSION="3.22"
+ARG PLATFORM="amd64"
+ARG TAG_PREFIX=""
+FROM ${NAMESPACE}/nodejs-alpine:${TAG_PREFIX}${VERSION}-${PLATFORM}
+
+ARG REQUIRED_PKGS="\
+  npm \
+"
+
+RUN apk add --no-cache $REQUIRED_PKGS

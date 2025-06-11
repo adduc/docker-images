@@ -3,16 +3,15 @@
 # This is a GitHub Actions workflow that builds Docker images
 ##
 
-name: Build
-
 on:
-  push:
-
-# Ensure that there is only ever one build running at a time for a given
-# branch
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  workflow_call:
+    inputs:
+      directory:
+        required: true
+        type: string
+      tag_prefix:
+        required: true
+        type: string
 
 jobs:
   gather-metadata:
@@ -30,7 +29,7 @@ jobs:
       - uses: ./.github/actions/gather-metadata
         id: gather-metadata
         with:
-          directory: .
+          directory: ${{ inputs.directory }}
 
   build-base:
     needs: gather-metadata
@@ -38,13 +37,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        base: [.]
+        base:
+          - ${{ inputs.directory }}
         directory: ${{ fromJson(needs.gather-metadata.outputs.list_base) }}
-    uses: ./.github/workflows/build-dir-2.yaml
-    secrets: inherit
-    with:
-      directory: ${{ matrix.directory }}
-      tag_prefix: ${{ needs.gather-metadata.outputs.tag_prefix }}
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          echo "Due to workflow depth limitations, we cannot build this image."
+          echo "Directory: ${{ inputs.directory }}/${{ matrix.directory }}"
+          exit 1
 
   build-non-base:
     needs: [gather-metadata, build-base]
@@ -55,13 +56,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        base: [.]
+        base:
+          - ${{ inputs.directory }}
         directory: ${{ fromJson(needs.gather-metadata.outputs.list_baseless) }}
-    uses: ./.github/workflows/build-dir-2.yaml
-    secrets: inherit
-    with:
-      directory: ${{ matrix.directory }}
-      tag_prefix: ${{ needs.gather-metadata.outputs.tag_prefix }}
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          echo "Due to workflow depth limitations, we cannot build this image."
+          echo "Directory: ${{ inputs.directory }}/${{ matrix.directory }}"
+          exit 1
 
   build-image:
     needs: gather-metadata
@@ -69,7 +72,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        base: [.]
+        base:
+          - ${{ inputs.directory }}
         variant: ${{ fromJson(needs.gather-metadata.outputs.list) }}
     runs-on: "${{ contains(matrix.variant, 'arm64') && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}"
     steps:
@@ -78,8 +82,9 @@ jobs:
 
       - uses: ./.github/actions/build-image
         with:
-          directory: .
+          directory: ${{ inputs.directory }}
           variant: ${{ matrix.variant }}
-          tag_prefix: ${{ needs.gather-metadata.outputs.tag_prefix }}
+          tag_prefix: ${{ inputs.tag_prefix }}
           docker_username: ${{ secrets.DOCKER_USERNAME }}
           docker_password: ${{ secrets.DOCKER_PASSWORD }}
+

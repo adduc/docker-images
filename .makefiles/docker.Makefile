@@ -45,6 +45,8 @@ BUILD_ARGS_STRING ?= \
 TAG ?= $(VERSION)-$(PLATFORM)
 FQTAG ?= $(NAMESPACE)/$(IMAGE):$(TAG_PREFIX)$(TAG)
 
+SHELL_CMD ?= sh
+
 list:
 	@echo $(VARIANTS)
 
@@ -80,3 +82,11 @@ $(VARIANTS:%=build-%):
 $(VARIANTS:%=push-%):
 	@echo -e "\e[1;32mPushing $(FQTAG)\e[0m..."
 	@docker push $(FQTAG)
+
+# shell
+$(VARIANTS:%=shell-%):
+	@echo -e "\e[1;32mRunning shell in $(FQTAG)\e[0m..."
+	@docker run --rm -it \
+		--platform linux/$(PLATFORM) \
+		$(FQTAG) \
+		$(SHELL_CMD)
