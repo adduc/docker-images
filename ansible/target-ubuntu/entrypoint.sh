@@ -68,6 +68,14 @@ prepare_user_ssh() {
   cat /home/"${USER}"/.ssh/*.pub > /home/"${USER}"/.ssh/authorized_keys
 }
 
+prepare_system_ssh() {
+  [ -d /mnt/system-ssh ] || return 0
+
+  echo "Copying system SSH keys from /mnt/system-ssh to /etc/ssh..."
+  mkdir -p /etc/ssh
+  cp -r /mnt/system-ssh/ssh_host_* /etc/ssh/
+}
+
 set_ssh_ownership() {
   echo "Setting ownership of SSH directories and files..."
 
@@ -86,6 +94,7 @@ main() {
   create_user
   grant_sudo_access
   prepare_user_ssh
+  prepare_system_ssh
   set_ssh_ownership
 
   exec_cmd "$@"
