@@ -30,17 +30,26 @@ process_user_env_vars() {
     set $USER
     NAME=$1
     USER_NAME=$2
-    ID=$(get_var "${NAME}_USER_ID")
 
     UID_OPTS=""
+
+    ID=$(get_var "${NAME}_USER_ID")
     if [ -n "$ID" ]; then
-      UID_OPTS="--uid $ID"
+      UID_OPTS="-u $ID"
+    fi
+
+    HOME=$(get_var "${NAME}_USER_HOME" "")
+    if [ -n "$HOME" ]; then
+      UID_OPTS="$UID_OPTS -h $HOME"
     fi
 
     adduser -D $UID_OPTS "$USER_NAME" || {
       >&2 echo "Failed to create user '$USER_NAME' with ID '$ID'."
       exit 1
     }
+
+    # Ensure user account is not locked
+    echo "${USER_NAME}:*" | chpasswd -e
   done
 }
 
