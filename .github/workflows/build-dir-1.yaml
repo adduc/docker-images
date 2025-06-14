@@ -10,6 +10,8 @@ on:
     branches:
       - main
   pull_request:
+    branches:
+      - main
 
 # Ensure that there is only ever one build running at a time for a given
 # branch
