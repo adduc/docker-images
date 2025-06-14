@@ -12,13 +12,8 @@ ARG REQUIRED_PKGS="\
 
 RUN apk add --no-cache $REQUIRED_PKGS
 
-# Set default environment variables defining the user to create
-# for running ansible playbooks
-ENV UID=1000 GID=1000 USER=ansible
+# Set default environment variables (processed by entry point scripts
+# in the base image to create a user)
+ENV USER_ANSIBLE=ansible ANSIBLE_USER_ID=1000
 
-# Create an entrypoint script to prepare the environment
-ADD entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT [ "/entrypoint.sh" ]
-
-CMD [ "sleep", "infinity" ]
+ADD fsroot /
