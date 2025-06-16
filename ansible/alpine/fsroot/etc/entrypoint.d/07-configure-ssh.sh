@@ -31,11 +31,12 @@ prepare_system_ssh() {
 }
 
 set_ssh_ownership() {
-  echo "Setting ownership of SSH directories and files..."
-
-  chown -R "${USER_ANSIBLE}:${USER_ANSIBLE}" /home/"${USER_ANSIBLE}"/.ssh
-  find /home/"${USER_ANSIBLE}"/.ssh -type d -exec chmod 700 {} +
-  find /home/"${USER_ANSIBLE}"/.ssh -type f -exec chmod 600 {} +
+  if [ -d /home/"${USER_ANSIBLE}"/.ssh ]; then
+    echo "Setting ownership of SSH directories and files..."
+    chown -R "${USER_ANSIBLE}:${USER_ANSIBLE}" /home/"${USER_ANSIBLE}"/.ssh
+    find /home/"${USER_ANSIBLE}"/.ssh -type d -exec chmod 700 {} +
+    find /home/"${USER_ANSIBLE}"/.ssh -type f -exec chmod 600 {} +
+  fi
 }
 
 exec_cmd() {
