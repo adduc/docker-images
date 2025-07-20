@@ -9,9 +9,10 @@ set -o nounset -o errexit -o pipefail
 
 ##
 # Utility function to get the value of an environment variable
+#
 # Usage: get_var VAR_NAME [default_value]
 ##
-get_var() { eval "echo -e \${$1:-${2:-}}"; }
+get_var() { eval "printf '%s' \"\${$1:-${2:-}}\""; }
 
 ##
 # Sets common variables used in entrypoint scripts
