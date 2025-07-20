@@ -15,6 +15,17 @@ set -o nounset -o errexit -o pipefail
 get_var() { eval "printf '%s' \"\${$1:-${2:-}}\""; }
 
 ##
+# Utility function to get environment variables matching a specific
+# pattern
+#
+# Usage: get_vars PATTERN
+# Returns: Lines matching the pattern in the format "NAME VALUE"
+##
+get_vars() {
+  env | grep "^$1" | sed "s/^$1${KV_REGEX}$/\1 \2/" || true
+}
+
+##
 # Sets common variables used in entrypoint scripts
 ##
 preflight() {

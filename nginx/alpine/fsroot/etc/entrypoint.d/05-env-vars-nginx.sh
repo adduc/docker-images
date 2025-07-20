@@ -13,7 +13,7 @@
 #   PHP_ENDPOINT: PHP endpoint to pass unresolved requests to
 ##
 process_vhost_php_env_vars() {
-  VHOSTS=$(env | grep "^VHOST_PHP_" | sed "s/^VHOST_PHP_${KV_REGEX}$/\1 \2/" || true)
+  VHOSTS=$(get_vars "VHOST_PHP_")
   [ -z "$VHOSTS" ] && return
 
   # don't expand wildcards
@@ -42,7 +42,7 @@ process_vhost_php_env_vars() {
 # VHOST_INDEX_PHP_<NAME>=<SERVER_NAME> <ROOT_DIR> <PHP_ENDPOINT>
 ##
 process_vhost_index_php_env_vars() {
-  VHOSTS=$(env | grep "^VHOST_INDEX_PHP_" | sed "s/^VHOST_INDEX_PHP_${KV_REGEX}$/\1 \2/" || true)
+  VHOSTS=$(get_vars "VHOST_INDEX_PHP_")
   [ -z "$VHOSTS" ] && return
 
   # don't expand wildcards
@@ -67,9 +67,26 @@ process_vhost_index_php_env_vars() {
 }
 
 process_vhost_static_env_vars() {
-  # find VHOST_STATIC_* env vars
-  # cat /etc/nginx/templates/vhost.static.conf to /etc/nginx/http.d/$NAME.static.conf
-  # replace SERVER_NAME, ROOT_DIR
+  VHOSTS=$(get_vars "VHOST_STATIC_")
+  [ -z "$VHOSTS" ] && return
+
+  # don't expand wildcards
+  set -o noglob
+
+  IFS=$'\n'
+  for VHOST in $VHOSTS; do
+    unset IFS
+    set $VHOST
+    NAME=$1
+    SERVER_NAME=$2
+    ROOT_DIR=$3
+
+    cat /etc/nginx/templates/vhost.static.conf \
+    | sed "\
+      s|{{ SERVER_NAME }}|$SERVER_NAME|g;\
+      s|{{ ROOT_DIR }}|$ROOT_DIR|g" \
+    > /etc/nginx/http.d/$NAME.static.conf
+  done
   return 0
 }
 
