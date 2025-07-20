@@ -107,6 +107,7 @@ process_nginx_conf_env_vars() {
 
 main() {
   process_vhost_php_env_vars
+  process_vhost_index_php_env_vars
   process_vhost_static_env_vars
   process_vhost_proxy_env_vars
   process_nginx_conf_env_vars
