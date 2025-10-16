@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-# Instruct bash to exit when a command returns a non-zero exit code,
+# Instruct ash to exit when a command returns a non-zero exit code,
 # when an undefined variable is used, and to fail if piped commands
 # return a non-zero exit code.
 set -o nounset -o errexit -o pipefail
@@ -15,8 +15,8 @@ create_group() {
 
   echo "Creating group ${USER} with GID ${GID}..."
 
-  groupadd \
-    --gid "${GID}" \
+  addgroup \
+    -g "${GID}" \
     "${USER}"
 
   echo "Group ${USER} created successfully."
@@ -32,12 +32,17 @@ create_user() {
 
   echo "Creating user ${USER} with UID ${UID} and GID ${GID}..."
 
-  useradd \
-    --create-home \
-    --gid "${GID}" \
-    --shell /bin/bash \
-    --uid "${UID}" \
+  adduser \
+    -G "${USER}" \
+    -s /bin/sh \
+    -u "${UID}" \
+    -D \
     "${USER}"
+
+    echo "User ${USER} created successfully."
+
+    echo "Ensuring user account is not locked to allow login..."
+    echo "${USER}:*" | chpasswd -e
 }
 
 grant_sudo_access() {

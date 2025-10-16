@@ -17,6 +17,8 @@ ARG REQUIRED_PKGS="\
   php${PHP_VERSION}-curl \
   php${PHP_VERSION}-pdo \
   php${PHP_VERSION}-pdo_sqlite \
+  php${PHP_VERSION}-pecl-apcu \
+  php${PHP_VERSION}-mbstring \
 "
 
 RUN apk add --no-cache $REQUIRED_PKGS

@@ -11,3 +11,14 @@ ARG REQUIRED_PKGS="\
 "
 
 RUN apk add --no-cache $REQUIRED_PKGS
+
+# Add molecule for testing Ansible roles
+RUN apk add --no-cache py-pip \
+ && pip install --break-system-packages --root-user-action ignore molecule \
+ && apk del --no-cache py-pip
+
+# Set default environment variables (processed by entry point scripts
+# in the base image to create a user)
+ENV USER_ANSIBLE=ansible ANSIBLE_USER_ID=1000
+
+ADD fsroot /

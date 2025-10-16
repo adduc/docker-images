@@ -1,10 +1,6 @@
-IMAGE := nodejs-alpine
-
+IMAGE := ansible-target-alpine
 VERSIONS := 3.21 3.22 edge
-
-
-TAG = npm-$(VERSION)-$(PLATFORM)
 
 # The include should happen after all variables are defined because the
 # included Makefile may rely on these variables.
-include ../../../.makefiles/docker.Makefile
+include ../../.makefiles/docker.Makefile

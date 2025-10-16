@@ -48,7 +48,7 @@ runs:
           set -o pipefail -o errexit -o nounset
           cd ${{ inputs.directory }}
           [ -f Dockerfile ] && IS_IMAGE="true" || IS_IMAGE="false"
-          [ "${{ github.ref }}" == "refs/heads/main" ] || tag_prefix="${{ github.ref_name }}-"
+          [ "${{ github.ref }}" == "refs/heads/main" ] || tag_prefix="${{ github.head_ref || github.ref_name }}-"
 
           echo "is_image=$IS_IMAGE" | tee -a $GITHUB_OUTPUT
           echo "list=$(make list | jq -R -c 'split(" ")')" | tee -a $GITHUB_OUTPUT
