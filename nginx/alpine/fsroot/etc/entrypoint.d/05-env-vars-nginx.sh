@@ -117,15 +117,13 @@ process_vhost_proxy_env_vars() {
     PROXY_ADDR=$4
 
     PROXY_HOST=$(get_var "${NAME}_VHOST_PROXY_HOST" '\$host')
-    PROXY_PROTO=$(get_var "${NAME}_VHOST_PROXY_PROTO" "https")
 
     cat /etc/nginx/templates/vhost.proxy.conf \
     | sed "\
       s|{{ SERVER_NAME }}|$SERVER_NAME|g;\
       s|{{ ROOT_DIR }}|$ROOT_DIR|g;\
       s|{{ PROXY_ADDR }}|$PROXY_ADDR|g;\
-      s|{{ PROXY_HOST }}|$PROXY_HOST|g;\
-      s|{{ PROXY_PROTO }}|$PROXY_PROTO|g" \
+      s|{{ PROXY_HOST }}|$PROXY_HOST|g"\
     > /etc/nginx/http.d/$NAME.proxy.conf
   done
 }
