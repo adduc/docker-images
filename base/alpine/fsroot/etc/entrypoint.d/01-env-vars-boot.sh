@@ -15,21 +15,19 @@
 process_boot_env_vars() {
     local BOOT_CMDS BOOT_CMD NAME
 
-    BOOT_CMDS=$(env | grep '^BOOT_CMD_' | sed "s/^BOOT_CMD_${KV_REGEX}$/\1 \2/" || true)
+    BOOT_CMDS=$(env | grep '^BOOT_CMD_' | sed "s/^BOOT_CMD_${KV_REGEX}$/\1/" || true)
     [ -z "$BOOT_CMDS" ] && return
 
     IFS=$'\n'
     for BOOT_CMD in $BOOT_CMDS; do
-        unset IFS
-        set $BOOT_CMD
-        NAME=$1
-        shift
+        CMD=$(get_var "BOOT_CMD_${BOOT_CMD}")
+        echo -e "--- CMD: $BOOT_CMD (SCRIPT) ---\n$CMD\n--- CMD: $BOOT_CMD (OUTPUT) ---"
 
-        echo "Running boot command $NAME: $@"
-        if ! eval "$@"; then
-            echo "Command $NAME failed"
+        if ! eval "$CMD"; then
+            echo "Command $BOOT_CMD failed"
             exit 1
         fi
+        echo "--- CMD: $BOOT_CMD (END) ---"
     done
 }
 

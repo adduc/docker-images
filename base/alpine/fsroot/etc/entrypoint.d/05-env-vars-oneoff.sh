@@ -20,24 +20,20 @@
 process_oneoff_cmd_env_vars() {
   local ONEOFF_CMDS CMD NAME
 
-  ONEOFF_CMDS=$(env | grep '^ONEOFF_CMD_' | sed "s/^ONEOFF_CMD_${KV_REGEX}$/\1 \2/" || true)
+  ONEOFF_CMDS=$(env | grep '^ONEOFF_CMD_' | sed "s/^ONEOFF_CMD_${KV_REGEX}$/\1/" || true)
   [ -z "$ONEOFF_CMDS" ] && return
 
   mkdir -p /etc/oneoff.d
 
   IFS=$'\n'
-  for CMD in $ONEOFF_CMDS; do
-    unset IFS
-    set $CMD
-    NAME=$1
-    shift
-
+  for ONEOFF_CMD in $ONEOFF_CMDS; do
+    CMD=$(get_var "ONEOFF_CMD_${ONEOFF_CMD}")
 
     # Write to /etc/oneoff.d/ so that the command is run later in the
     # startup process
-    echo "#!/bin/sh" > "/etc/oneoff.d/${NAME}.sh"
-    echo "$@" >> "/etc/oneoff.d/${NAME}.sh"
-    chmod +x "/etc/oneoff.d/${NAME}.sh"
+    echo "#!/bin/sh" > "/etc/oneoff.d/${ONEOFF_CMD}.sh"
+    echo "$CMD" >> "/etc/oneoff.d/${ONEOFF_CMD}.sh"
+    chmod +x "/etc/oneoff.d/${ONEOFF_CMD}.sh"
   done
 }
 

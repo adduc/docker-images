@@ -90,7 +90,7 @@ run_cmd() {
 # Main entrypoint function
 ##
 main() {
-  echo -e "---\nStarting entrypoint script\n---"
+  echo -e "--- ENTRYPOINT ---"
   preflight
   run_entrypoints
   set_trap_handler

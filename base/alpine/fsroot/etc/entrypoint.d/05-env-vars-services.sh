@@ -29,20 +29,16 @@
 process_service_env_vars() {
   local SERVICES SERVICE NAME COUNT N
 
-  SERVICES=$(env | grep '^SERVICE_' | sed "s/^SERVICE_${KV_REGEX}$/\1 \2/" || true)
+  SERVICES=$(env | grep '^SERVICE_' | sed "s/^SERVICE_${KV_REGEX}$/\1/" || true)
   [ -z "$SERVICES" ] && return
 
   IFS=$'\n'
   for SERVICE in $SERVICES; do
-    unset IFS
-    set $SERVICE
-    NAME=$1
-    shift
+    NAME=$(echo "$SERVICE" | tr '[:upper:]' '[:lower:]')
+    CMD=$(get_var "SERVICE_${SERVICE}")
+    COUNT=$(get_var "SERVICE_${SERVICE}_COUNT" "1")
 
-    eval COUNT=\${${NAME}_SERVICE_COUNT:-1}
-    NAME=$(echo "$NAME" | tr '[:upper:]' '[:lower:]')
-
-    echo "Defining service $NAME with command: $@ (count: $COUNT)"
+    echo "Defining service $NAME with command: $CMD (count: $COUNT)"
 
     for N in $(seq $COUNT); do
       # Create the service directory
@@ -51,7 +47,7 @@ process_service_env_vars() {
       echo "#!/bin/sh" > "/etc/service/${NAME}_${N}/run"
       echo "export SERVICE_COUNT_TOTAL=$COUNT" >> "/etc/service/${NAME}_${N}/run"
       echo "export SERVICE_COUNT_INDEX=$N" >> "/etc/service/${NAME}_${N}/run"
-      echo "{ $@; } >> /var/log/svc/${NAME}_${N}.log 2>&1" >> "/etc/service/${NAME}_${N}/run"
+      echo "{ $CMD; } >> /var/log/svc/${NAME}_${N}.log 2>&1" >> "/etc/service/${NAME}_${N}/run"
       chmod +x "/etc/service/${NAME}_${N}/run"
     done
   done
