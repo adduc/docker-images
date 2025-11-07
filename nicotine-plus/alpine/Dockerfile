@@ -12,5 +12,6 @@ RUN apk add --no-cache ttf-opensans gtk4.0 py3-gobject3 python3 python3-gdbm \
 
 RUN adduser -D -u 1000 -g 1000 nicotine
 
-ENV SERVICE_GTK4_BROADWAYD="su - nicotine -c 'gtk4-broadwayd :5 -a 0.0.0.0 -p 8080'" \
+ENV DIR_CONFIG=/home/nicotine/.config/nicotine CONFIG_DIR_OWNER=nicotine
+    SERVICE_GTK4_BROADWAYD="su - nicotine -c 'gtk4-broadwayd :5 -a 0.0.0.0 -p 8080'" \
     SERVICE_NICOTINE_PLUS="su - nicotine -c 'env GDK_BACKEND=broadway BROADWAY_DISPLAY=:5 nicotine'"
