@@ -1,0 +1,26 @@
+#!/bin/sh
+
+create_dir() {
+  for dir in "$@"; do
+    if [ ! -d "$dir" ]; then
+      mkdir -p "$dir"
+      chown nicotine:nicotine "$dir"
+    fi
+  done
+}
+
+main() {
+  create_dir \
+    "/home/nicotine" \
+    "/home/nicotine/.local" \
+    "/home/nicotine/.local/share" \
+    "/home/nicotine/.local/share/nicotine" \
+    "/home/nicotine/.local/share/nicotine/downloads" \
+    "/home/nicotine/.local/share/nicotine/incomplete" \
+    "/home/nicotine/.config" \
+    "/home/nicotine/.config/nicotine"
+
+  su - nicotine -c 'env GDK_BACKEND=broadway BROADWAY_DISPLAY=:5 nicotine'
+}
+
+main >> /var/log/svc/nicotine-plus.log 2>&1
