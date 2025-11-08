@@ -2,10 +2,10 @@
 
 create_dir() {
   for dir in "$@"; do
-    if [ ! -d "$dir" ]; then
-      mkdir -p "$dir"
-      chown nicotine:nicotine "$dir"
-    fi
+    # Create directory if it doesn't exist
+    [ -d "$dir" ] || mkdir -p "$dir"
+    # ensure correct ownership
+    chown nicotine:nicotine "$dir"
   done
 }
 
