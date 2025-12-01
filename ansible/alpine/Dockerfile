@@ -8,6 +8,7 @@ ARG REQUIRED_PKGS="\
   ansible-core \
   ansible-lint \
   openssh-client \
+  sshpass \
 "
 
 RUN apk add --no-cache $REQUIRED_PKGS
