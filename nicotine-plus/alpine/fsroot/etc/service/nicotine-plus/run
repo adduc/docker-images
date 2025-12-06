@@ -20,7 +20,7 @@ main() {
     "/home/nicotine/.config" \
     "/home/nicotine/.config/nicotine"
 
-  su - nicotine -c 'env GDK_BACKEND=broadway BROADWAY_DISPLAY=:5 nicotine'
+  su - nicotine -c 'env GDK_BACKEND=broadway GTK_OVERLAY_SCROLLING=0 BROADWAY_DISPLAY=:5 nicotine'
 }
 
 main >> /var/log/svc/nicotine-plus.log 2>&1
