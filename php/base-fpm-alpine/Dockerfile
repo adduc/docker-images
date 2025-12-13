@@ -16,7 +16,6 @@ ARG PHP_VERSION="84"
 ARG REQUIRED_PKGS="\
   php${PHP_VERSION}-cli \
   php${PHP_VERSION}-fpm \
-  php${PHP_VERSION}-opcache \
 "
 
 ARG UNNEEDED_PATHS="\
@@ -25,7 +24,11 @@ ARG UNNEEDED_PATHS="\
   /etc/php/php-fpm.d/* \
 "
 
-RUN apk add --no-cache $REQUIRED_PKGS \
+RUN \
+  if [ "$PHP_VERSION" = "84" ]; then \
+    REQUIRED_PKGS="$REQUIRED_PKGS php${PHP_VERSION}-opcache"; \
+  fi \
+ && apk add --no-cache $REQUIRED_PKGS \
  && mv /etc/php${PHP_VERSION} /etc/php \
  && ln -fs /usr/bin/php${PHP_VERSION} /usr/bin/php \
  && ln -s /etc/php /etc/php${PHP_VERSION} \

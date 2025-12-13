@@ -1,6 +1,6 @@
 IMAGE := nodejs-alpine
 
-VERSIONS := 3.21 3.22 edge
+VERSIONS := 3.22 3.23 edge
 
 
 TAG = npm-$(VERSION)-$(PLATFORM)
