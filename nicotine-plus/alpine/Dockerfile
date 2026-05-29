@@ -6,9 +6,9 @@ FROM ${NAMESPACE}/base-alpine:${TAG_PREFIX}${VERSION}-${PLATFORM}
 
 # Use two separate apk commands to minimize the number of packages
 # installed from the edge/testing repository.
-RUN apk add --no-cache ttf-opensans gtk4.0 py3-gobject3 python3 python3-gdbm \
- && apk add --no-cache nicotine-plus \
-  --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing
+RUN apk add --no-cache ttf-opensans gtk4.0 py3-gobject3 python3 python3-gdbm
+
+RUN apk add --no-cache nicotine-plus@edge
 
 RUN adduser -D -u 1000 -g 1000 nicotine
 
