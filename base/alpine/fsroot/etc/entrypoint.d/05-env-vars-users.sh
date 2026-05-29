@@ -31,6 +31,12 @@ process_user_env_vars() {
     NAME=$1
     USER_NAME=$2
 
+    # if user already exists, skip creation
+    if id "$USER_NAME" >/dev/null 2>&1; then
+      >&2 echo "User '$USER_NAME' already exists, skipping creation."
+      continue
+    fi
+
     UID_OPTS=""
 
     ID=$(get_var "${NAME}_USER_ID")
