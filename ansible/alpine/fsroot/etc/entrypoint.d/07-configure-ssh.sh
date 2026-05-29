@@ -20,13 +20,15 @@ prepare_user_ssh() {
 prepare_system_ssh() {
   [ -d /mnt/system-ssh ] || return 0
 
+  # determine what the current network range is for docker hosts and trust those keys
+  DOCKER_HOST_IP=$(ip route | awk '/default/ { print $3 }')
+  NETWORK_WILDCARD=$(echo "${DOCKER_HOST_IP}" | awk -F. '{ print $1 "." $2 "." $3 ".*" }')
+
   echo "Trusting system SSH keys..."
 
-  truncate -s 0 /home/"${USER_ANSIBLE}"/.ssh/known_hosts
-
   for file in /mnt/system-ssh/ssh_host_*.pub; do
-    # use wildcard to trust fingerprint for all hostnames
-    (echo -n "* "; cat "$file") >> /home/"${USER_ANSIBLE}"/.ssh/known_hosts
+    # use wildcard to trust fingerprint for docker hosts
+    (echo -n "${NETWORK_WILDCARD} "; cat "$file") >> /home/"${USER_ANSIBLE}"/.ssh/known_hosts
   done
 }
 
@@ -39,16 +41,10 @@ set_ssh_ownership() {
   fi
 }
 
-exec_cmd() {
-  echo "Executing command: $*"
-  exec "$@"
-}
-
 main() {
   prepare_user_ssh
   prepare_system_ssh
   set_ssh_ownership
-  exec_cmd "$@"
 }
 
 main "$@"
