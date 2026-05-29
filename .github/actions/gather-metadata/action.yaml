@@ -34,7 +34,7 @@ runs:
           echo GITHUB_REF=${{ github.ref }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Prepare .env file
         shell: bash
         run: |
