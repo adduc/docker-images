@@ -14,6 +14,14 @@ ARG REQUIRED_PKGS="\
 
 RUN apk add --no-cache $REQUIRED_PKGS
 
+# Allow installing packages from Alpine Edge repositories using @edge
+# tag (e.g. opentofu@edge)
+RUN { \
+  echo "@edge http://dl-cdn.alpinelinux.org/alpine/edge/main"; \
+  echo "@edge http://dl-cdn.alpinelinux.org/alpine/edge/community"; \
+  echo "@edge http://dl-cdn.alpinelinux.org/alpine/edge/testing"; \
+  } >> /etc/apk/repositories
+
 ADD fsroot /
 
 VOLUME /var/cache /var/log
