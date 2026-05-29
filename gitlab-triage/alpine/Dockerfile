@@ -13,7 +13,7 @@ ARG REQUIRED_PKGS="\
 
 RUN apk add --no-cache $REQUIRED_PKGS
 
-ARG TRIAGE_VERSION="1.44.5"
+ARG TRIAGE_VERSION="1.50.0"
 
 RUN gem install gitlab-triage -v ${TRIAGE_VERSION} \
     --clear-source \
