@@ -5,22 +5,13 @@ ARG TAG_PREFIX=""
 FROM ${NAMESPACE}/base-alpine:${TAG_PREFIX}${VERSION}-${PLATFORM}
 
 ARG REQUIRED_PKGS="\
-  ansible \
   ansible-core \
   ansible-lint \
   openssh-client \
   sshpass \
-  podman \
 "
 
 RUN apk add --no-cache $REQUIRED_PKGS
-
-# Add molecule for testing Ansible roles
-RUN apk add --no-cache py-pip \
- && pip install --break-system-packages --root-user-action ignore molecule molecule-podman \
- && apk del --no-cache py-pip
-
-
 
 # Set default environment variables (processed by entry point scripts
 # in the base image to create a user)
