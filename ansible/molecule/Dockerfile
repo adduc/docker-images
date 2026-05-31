@@ -1,0 +1,28 @@
+ARG NAMESPACE="local"
+ARG VERSION="3.23"
+ARG PLATFORM="amd64"
+ARG TAG_PREFIX=""
+FROM ${NAMESPACE}/ansible-alpine:${TAG_PREFIX}${VERSION}-${PLATFORM}
+
+ARG REQUIRED_PKGS="\
+  ansible-core \
+  ansible-lint \
+  openssh-client \
+  sshpass \
+  podman \
+"
+
+RUN apk add --no-cache $REQUIRED_PKGS
+
+# Add molecule for testing Ansible roles
+RUN apk add --no-cache py-pip \
+ && pip install --break-system-packages --root-user-action ignore molecule molecule-podman \
+ && apk del --no-cache py-pip
+
+
+
+# Set default environment variables (processed by entry point scripts
+# in the base image to create a user)
+ENV USER_ANSIBLE=ansible ANSIBLE_USER_ID=1000
+
+ADD fsroot /
