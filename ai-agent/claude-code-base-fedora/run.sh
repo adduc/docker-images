@@ -4,7 +4,7 @@ set -o pipefail -o nounset
 
 [ -d "${1:-}" ] || { >&2 echo "Usage: $0 <dir>"; exit 1; }
 
-IMAGE="${CLAUDE_CODE_IMAGE:-local/claude-code-fedora:44-amd64}"
+IMAGE="${CLAUDE_CODE_IMAGE:-local/ai-agent-claude-code-fedora:44-amd64}"
 
 [ -d ~/.claude ] || mkdir ~/.claude
 [ -f ~/.claude.json ] || touch ~/.claude.json

@@ -1,4 +1,4 @@
-IMAGE := claude-code-fedora
+IMAGE := ai-agent-claude-code-fedora
 VERSIONS := 43 44 rawhide
 SHELL_CMD := bash
 
