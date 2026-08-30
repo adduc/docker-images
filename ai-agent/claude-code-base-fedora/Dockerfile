@@ -16,6 +16,7 @@ FROM fedora:${VERSION} AS runtime
 ARG REQUIRED_PKGS="\
   jq \
   ripgrep \
+  tzdata \
   util-linux \
 "
 
@@ -35,6 +36,7 @@ COPY --from=claude /home/user/.local/bin/claude /home/user/.local/bin/claude
 # host user so that bind-mounted files remain accessible.
 ENV UID=1000 GID=1000 USER=user
 ENV HOME=/home/user
+ENV TZ=UTC
 ENV PATH=/home/user/.local/bin:/home/user/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # Create an entrypoint script to prepare the user before running claude
