@@ -4,10 +4,9 @@ ARG PLATFORM="amd64"
 ARG TAG_PREFIX=""
 FROM ${NAMESPACE}/ansible-alpine:${TAG_PREFIX}${VERSION}-${PLATFORM}
 
-# ARGs declared before FROM don't survive into the build stage, so VERSION
-# needs to be redeclared here to be usable below.
-ARG VERSION
-
+# ansible-core and ansible-lint are already installed by the ansible-alpine
+# base image for every version (via apk normally, or via pip from git main
+# on edge — see ansible/base/Dockerfile), so they're not repeated here.
 ARG REQUIRED_PKGS="\
   openssh-client \
   sshpass \
@@ -15,14 +14,6 @@ ARG REQUIRED_PKGS="\
 "
 
 RUN apk add --no-cache $REQUIRED_PKGS
-
-# On "edge" the base ansible-alpine image already installs ansible from git
-# main via pip (see ansible/base/Dockerfile); installing ansible-core via apk
-# here on top of that would pull in Alpine's edge-repo package and conflict
-# with it. Everyone else gets the normal apk-packaged ansible-core.
-RUN if [ "$VERSION" != "edge" ]; then \
-      apk add --no-cache ansible-core ansible-lint; \
-    fi
 
 # Add molecule for testing Ansible roles
 RUN apk add --no-cache py-pip \
