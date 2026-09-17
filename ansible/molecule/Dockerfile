@@ -4,9 +4,10 @@ ARG PLATFORM="amd64"
 ARG TAG_PREFIX=""
 FROM ${NAMESPACE}/ansible-alpine:${TAG_PREFIX}${VERSION}-${PLATFORM}
 
+# ansible-core and ansible-lint are already installed by the ansible-alpine
+# base image for every version (via apk normally, or via pip from git main
+# on edge — see ansible/base/Dockerfile), so they're not repeated here.
 ARG REQUIRED_PKGS="\
-  ansible-core \
-  ansible-lint \
   openssh-client \
   sshpass \
   podman \
